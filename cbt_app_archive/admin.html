@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff Room | Excellence Academy Admin</title>
+<style>
+  :root{
+    --navy:#002b49;
+    --navy-deep:#001a2e;
+    --gold:#b8860b;
+    --gold-light:#d4a017;
+    --slate:#4b5563;
+    --slate-light:#8a94a3;
+    --white:#ffffff;
+    --paper:#f7f5f0;
+    --red:#a12626;
+    --green:#1f6f43;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Segoe UI',Georgia,serif;
+    background:var(--paper);
+    color:var(--navy-deep);
+    min-height:100vh;
+  }
+
+  /* ---------- LOGIN GATE ---------- */
+  #loginGate{
+    position:fixed;inset:0;
+    background:linear-gradient(160deg,var(--navy-deep),var(--navy) 60%,var(--navy-deep));
+    display:flex;align-items:center;justify-content:center;
+    z-index:999;
+    padding:20px;
+  }
+  .login-box{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(184,134,11,0.4);
+    border-radius:4px;
+    padding:44px 40px;
+    width:100%;
+    max-width:380px;
+    text-align:center;
+    color:#fff;
+  }
+  .login-box .crest{
+    width:56px;height:56px;
+    margin:0 auto 18px auto;
+    border:2px solid var(--gold);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--gold-light);
+    font-weight:bold;
+  }
+  .login-box h1{
+    font-size:20px;
+    font-weight:400;
+    letter-spacing:1px;
+    color:var(--gold-light);
+    margin-bottom:6px;
+    font-family:Georgia,serif;
+  }
+  .login-box p.sub{
+    font-size:12.5px;
+    color:#a9b4c2;
+    margin-bottom:26px;
+    letter-spacing:0.5px;
+  }
+  .field{margin-bottom:16px;text-align:left;}
+  .field label{
+    display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
+    color:var(--gold-light);margin-bottom:6px;
+  }
+  .field input{
+    width:100%;padding:11px 12px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.18);
+    color:#fff;border-radius:2px;font-size:14px;
+    font-family:Georgia,serif;
+  }
+  .field input:focus{outline:none;border-color:var(--gold);}
+  .btn-gold{
+    width:100%;padding:12px;
+    background:var(--gold);
+    color:var(--navy-deep);
+    border:none;font-weight:bold;
+    letter-spacing:2px;text-transform:uppercase;font-size:12.5px;
+    border-radius:2px;cursor:pointer;margin-top:8px;
+    transition:background .2s ease;
+  }
+  .btn-gold:hover{background:var(--gold-light);}
+  #loginError{
+    color:#ff9d9d;font-size:12.5px;margin-top:14px;min-height:16px;
+  }
+  .hint{
+    margin-top:18px;font-size:11px;color:#7c8798;line-height:1.6;
+  }
+
+  /* ---------- DASHBOARD ---------- */
+  #dashboard{display:none;}
+  header.top{
+    background:var(--navy-deep);
+    color:#fff;
+    padding:18px 30px;
+    display:flex;align-items:center;justify-content:space-between;
+    border-bottom:3px solid var(--gold);
+  }
+  header.top .brand{display:flex;align-items:center;gap:12px;}
+  header.top .crest-mini{
+    width:38px;height:38px;border:1.5px solid var(--gold);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;color:var(--gold-light);
+    font-size:14px;font-weight:bold;
+  }
+  header.top h1{font-size:18px;font-weight:400;letter-spacing:0.5px;font-family:Georgia,serif;}
+  header.top .sub{font-size:11px;color:#a9b4c2;letter-spacing:1px;text-transform:uppercase;}
+  header.top nav{display:flex;gap:10px;}
+  header.top nav a, .logout-btn{
+    color:#e7ecf2;text-decoration:none;font-size:13px;
+    border:1px solid rgba(255,255,255,0.25);padding:8px 16px;border-radius:2px;
+    cursor:pointer;background:transparent;transition:all .2s ease;letter-spacing:0.5px;
+  }
+  header.top nav a:hover, .logout-btn:hover{border-color:var(--gold);color:var(--gold-light);}
+
+  main{max-width:1180px;margin:0 auto;padding:36px 24px 80px 24px;}
+
+  .tabs{display:flex;gap:6px;margin-bottom:28px;border-bottom:2px solid #ddd6c8;}
+  .tab-btn{
+    background:none;border:none;padding:12px 22px;cursor:pointer;
+    font-size:13.5px;letter-spacing:1px;text-transform:uppercase;color:var(--slate);
+    border-bottom:3px solid transparent;font-family:Georgia,serif;
+  }
+  .tab-btn.active{color:var(--navy);border-bottom-color:var(--gold);font-weight:bold;}
+
+  .panel{display:none;}
+  .panel.active{display:block;animation:fadeIn .35s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  .card{
+    background:#fff;border:1px solid #e4ddcf;border-radius:4px;
+    padding:28px 26px;margin-bottom:24px;
+    box-shadow:0 2px 10px rgba(0,43,73,0.05);
+  }
+  .card h2{
+    font-size:16px;font-weight:600;color:var(--navy);margin-bottom:4px;
+    font-family:Georgia,serif;
+  }
+  .card .desc{font-size:12.5px;color:var(--slate);margin-bottom:20px;}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media(max-width:720px){.grid-2{grid-template-columns:1fr;}}
+
+  .field2 label{
+    display:block;font-size:11.5px;font-weight:bold;letter-spacing:0.5px;
+    text-transform:uppercase;color:var(--navy);margin-bottom:6px;
+  }
+  .field2 input[type=number], .field2 textarea{
+    width:100%;padding:10px 12px;border:1px solid #cfc7b4;border-radius:3px;
+    font-family:'Courier New',monospace;font-size:13px;color:var(--navy-deep);
+    background:#fdfcf9;
+  }
+  .field2 textarea{min-height:220px;resize:vertical;line-height:1.5;}
+  .field2{margin-bottom:18px;}
+
+  .toggle-row{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--paper);border:1px solid #e4ddcf;padding:14px 16px;border-radius:3px;
+    margin-bottom:18px;
+  }
+  .toggle-row span.label{font-size:13.5px;color:var(--navy);font-weight:600;}
+  .switch{position:relative;width:46px;height:24px;}
+  .switch input{opacity:0;width:0;height:0;}
+  .slider{
+    position:absolute;cursor:pointer;inset:0;background:#c7c0b0;border-radius:24px;transition:.3s;
+  }
+  .slider::before{
+    content:"";position:absolute;height:18px;width:18px;left:3px;top:3px;
+    background:white;border-radius:50%;transition:.3s;
+  }
+  .switch input:checked + .slider{background:var(--gold);}
+  .switch input:checked + .slider::before{transform:translateX(22px);}
+
+  .btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;}
+  .btn{
+    padding:11px 22px;border-radius:3px;border:none;cursor:pointer;
+    font-size:12.5px;letter-spacing:1px;text-transform:uppercase;font-weight:bold;
+    transition:all .2s ease;
+  }
+  .btn-primary{background:var(--navy);color:#fff;}
+  .btn-primary:hover{background:var(--navy-deep);}
+  .btn-outline{background:transparent;border:1px solid var(--navy);color:var(--navy);}
+  .btn-outline:hover{background:var(--navy);color:#fff;}
+  .btn-danger{background:transparent;border:1px solid var(--red);color:var(--red);}
+  .btn-danger:hover{background:var(--red);color:#fff;}
+  .save-msg{font-size:12.5px;color:var(--green);margin-top:12px;min-height:16px;font-weight:600;}
+
+  /* Leaderboard */
+  .stats-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px;}
+  .stat-box{
+    flex:1 1 180px;background:var(--navy-deep);color:#fff;padding:20px;border-radius:4px;
+    border-top:3px solid var(--gold);
+  }
+  .stat-box .num{font-size:28px;font-weight:bold;color:var(--gold-light);font-family:Georgia,serif;}
+  .stat-box .lbl{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#b7c2d0;margin-top:4px;}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  thead th{
+    background:var(--navy);color:#fff;text-align:left;padding:12px 14px;
+    font-size:11.5px;letter-spacing:1px;text-transform:uppercase;font-weight:600;
+  }
+  tbody td{padding:12px 14px;border-bottom:1px solid #ede7d8;color:var(--navy-deep);}
+  tbody tr:nth-child(even){background:#fbf9f3;}
+  tbody tr:hover{background:#f3ecd9;}
+  .badge{
+    padding:4px 10px;border-radius:12px;font-size:11px;font-weight:bold;
+    letter-spacing:0.5px;text-transform:uppercase;
+  }
+  .badge.completed{background:#e2f3ea;color:var(--green);}
+  .badge.terminated{background:#fbe4e4;color:var(--red);}
+  .empty-row td{text-align:center;color:var(--slate-light);padding:40px;font-style:italic;}
+</style>
+</head>
+<body>
+
+  <!-- ============ LOGIN GATE ============ -->
+  <div id="loginGate">
+    <div class="login-box">
+      <div class="crest">EA</div>
+      <h1>Staff Room Access</h1>
+      <p class="sub">Restricted &mdash; Faculty &amp; Administration Only</p>
+      <form id="loginForm">
+        <div class="field">
+          <label>Username</label>
+          <input type="text" id="adminUser" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="adminPass" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn-gold">Sign In</button>
+      </form>
+      <div id="loginError"></div>
+      <div class="hint">Default credentials &mdash; admin / password123</div>
+    </div>
+  </div>
+
+  <!-- ============ DASHBOARD ============ -->
+  <div id="dashboard">
+    <header class="top">
+      <div class="brand">
+        <div class="crest-mini">EA</div>
+        <div>
+          <h1>Excellence Academy</h1>
+          <div class="sub">Academic Administration Console</div>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html">&larr; Main Gate</a>
+        <button class="logout-btn" id="logoutBtn">Sign Out</button>
+      </nav>
+    </header>
+
+    <main>
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="overview">Overview</button>
+        <button class="tab-btn" data-tab="config">Exam Configuration</button>
+        <button class="tab-btn" data-tab="teachers">Teacher Accounts</button>
+        <button class="tab-btn" data-tab="board">Leaderboard &amp; Gradebook</button>
+      </div>
+
+      <!-- ===== OVERVIEW PANEL ===== -->
+      <section class="panel active" id="panel-overview">
+        <div class="stats-row" id="overviewStats"></div>
+        <div class="card">
+          <h2>System Logs</h2>
+          <p class="desc">Recent administrative and exam events recorded for review.</p>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Event</th>
+                  <th>Actor</th>
+                </tr>
+              </thead>
+              <tbody id="logBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== CONFIG PANEL ===== -->
+      <section class="panel" id="panel-config">
+        <div class="card">
+          <h2>Examination Parameters</h2>
+          <p class="desc">Set the timer, question bank, and calculator availability for the Student Exam Center.</p>
+
+          <div class="grid-2">
+            <div>
+              <div class="field2">
+                <label>Exam Duration (minutes)</label>
+                <input type="number" id="durationInput" min="1" max="180" value="30">
+              </div>
+
+              <div class="toggle-row">
+                <span class="label">Enable Student Calculator Utility</span>
+                <label class="switch">
+                  <input type="checkbox" id="calcToggle">
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="toggle-row">
+                <span class="label">Pass Mark (out of 40)</span>
+                <input type="number" id="passMarkInput" min="0" max="40" value="20" style="width:70px;padding:6px 8px;border:1px solid #cfc7b4;border-radius:3px;">
+              </div>
+
+              <div class="save-msg" id="saveMsg"></div>
+              <div class="btn-row">
+                <button class="btn btn-primary" id="saveConfigBtn">Save Settings</button>
+                <button class="btn btn-outline" id="resetConfigBtn">Restore Default Bank</button>
+              </div>
+            </div>
+
+            <div class="field2" style="margin-bottom:0;">
+              <label>Question Bank (JSON Array &mdash; q / options / correct / subject)</label>
+              <textarea id="questionBankInput" spellcheck="false"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Institutional Control</h2>
+          <p class="desc">Manage subjects, student rosters, and the exam-ready classroom registry.</p>
+          <div class="grid-2">
+            <div>
+              <div class="field2">
+                <label>Active Subjects</label>
+                <div id="subjectList"></div>
+                <div style="display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap;">
+                  <input type="text" id="newSubjectInput" placeholder="New subject name" style="flex:1;min-width:170px;padding:10px 12px;border:1px solid #cfc7b4;border-radius:3px;background:#fdfcf9;">
+                  <button class="btn btn-outline" id="addSubjectBtn">Add Subject</button>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="field2">
+                <label>Student Roster</label>
+                <div id="studentList"></div>
+                <div style="display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap;">
+                  <input type="text" id="newStudentInput" placeholder="Student Name - ID" style="flex:1;min-width:170px;padding:10px 12px;border:1px solid #cfc7b4;border-radius:3px;background:#fdfcf9;">
+                  <button class="btn btn-outline" id="addStudentBtn">Add Student</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TEACHER MANAGEMENT PANEL ===== -->
+      <section class="panel" id="panel-teachers">
+        <div class="card">
+          <h2>Teacher Accounts</h2>
+          <p class="desc">Create, update, or delete teacher access and assign subjects.</p>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Teacher Name</th>
+                  <th>Username</th>
+                  <th>Subjects</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="teacherBody"></tbody>
+            </table>
+          </div>
+          <div class="field2" style="margin-top:20px;">
+            <label>New Teacher / Update Existing</label>
+            <input type="text" id="teacherNameInput" placeholder="Full name">
+            <input type="text" id="teacherUserInput" placeholder="Username">
+            <input type="password" id="teacherPassInput" placeholder="Password">
+            <input type="text" id="teacherSubjectsInput" placeholder="Assigned subjects, comma-separated">
+            <div class="btn-row" style="margin-top:10px;">
+              <button class="btn btn-primary" id="saveTeacherBtn">Save Teacher</button>
+              <button class="btn btn-outline" id="clearTeacherBtn">Clear Form</button>
+            </div>
+            <div class="save-msg" id="teacherSaveMsg"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== LEADERBOARD PANEL ===== -->
+      <section class="panel" id="panel-board">
+        <div class="stats-row" id="statsRow"></div>
+
+        <div class="card">
+          <h2>Live Gradebook</h2>
+          <p class="desc">Real-time results captured from the Student Exam Center, read directly from the results repository.</p>
+
+          <div class="btn-row" style="margin-bottom:20px;">
+            <button class="btn btn-outline" id="exportBtn">Export Gradebook to CSV</button>
+            <button class="btn btn-danger" id="clearBtn">Clear Database Logs</button>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Student ID</th>
+                  <th>Student Name</th>
+                  <th>Subject</th>
+                  <th>Final Score</th>
+                  <th>Infractions Caught</th>
+                  <th>Exam Status</th>
+                  <th>Timestamp</th>
+                </tr>
+              </thead>
+              <tbody id="resultsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+
+  var ADMIN_USER = "admin";
+  var ADMIN_PASS = "password123";
+
+  var DEFAULT_QUESTIONS = [{"q":"What is 91 + 24?","options":["122","112","115","116"],"correct":2},{"q":"What is 96 + 79?","options":["176","170","184","175"],"correct":3},{"q":"What is 37 + 39?","options":["76","82","71","81"],"correct":0},{"q":"What is 38 + 67?","options":["105","111","102","110"],"correct":0},{"q":"What is 53 + 45?","options":["96","100","106","98"],"correct":3},{"q":"What is 22 + 55?","options":["85","80","72","77"],"correct":3},{"q":"What is 78 + 25?","options":["103","107","113","102"],"correct":0},{"q":"What is 83 + 34?","options":["118","124","117","116"],"correct":2},{"q":"What is 22 + 58?","options":["80","76","88","83"],"correct":0},{"q":"What is 36 + 95?","options":["141","131","130","134"],"correct":1},{"q":"What is 70 - 39?","options":["35","38","31","28"],"correct":2},{"q":"What is 54 - 30?","options":["24","30","21","28"],"correct":0},{"q":"What is 77 - 41?","options":["40","43","36","32"],"correct":2},{"q":"What is 145 - 45?","options":["97","100","105","109"],"correct":1},{"q":"What is 67 - 42?","options":["29","24","31","25"],"correct":3},{"q":"What is 137 - 37?","options":["100","105","99","109"],"correct":0},{"q":"What is 117 - 26?","options":["91","96","97","90"],"correct":0},{"q":"What is 64 - 28?","options":["45","40","34","36"],"correct":3},{"q":"What is 10 × 4?","options":["37","40","46","41"],"correct":1},{"q":"What is 10 × 10?","options":["97","101","108","100"],"correct":3},{"q":"What is 6 × 5?","options":["35","31","28","30"],"correct":3},{"q":"What is 3 × 10?","options":["30","28","38","32"],"correct":0},{"q":"What is 5 × 10?","options":["50","58","52","47"],"correct":0},{"q":"What is 3 × 5?","options":["17","22","14","15"],"correct":3},{"q":"What is 11 × 5?","options":["60","54","55","56"],"correct":2},{"q":"What is 7 × 3?","options":["29","21","18","23"],"correct":1},{"q":"What is 121 ÷ 11?","options":["10","12","11","13"],"correct":2},{"q":"What is 40 ÷ 8?","options":["4","6","7","5"],"correct":3},{"q":"What is 56 ÷ 7?","options":["7","8","9","10"],"correct":1},{"q":"What is 144 ÷ 12?","options":["11","13","14","12"],"correct":3},{"q":"What is 21 ÷ 7?","options":["5","2","3","4"],"correct":2},{"q":"What is 90 ÷ 10?","options":["8","9","11","10"],"correct":1},{"q":"Solve for x: x + 15 = 24","options":["8","11","9","10"],"correct":2},{"q":"Solve for x: x + 4 = 22","options":["19","20","17","18"],"correct":3},{"q":"Solve for x: x + 8 = 11","options":["3","2","5","4"],"correct":0},{"q":"Solve for x: x + 7 = 23","options":["17","15","16","18"],"correct":2},{"q":"What is 25% of 200?","options":["48","52","50","55"],"correct":2},{"q":"What is 10% of 90?","options":["9","14","11","7"],"correct":0},{"q":"What is the square of 7?","options":["49","51","47","54"],"correct":0},{"q":"What is the square root of 81?","options":["7","14","9","11"],"correct":2}];
+
+  var DEFAULT_CONFIG = {
+    duration: 30,
+    passMark: 20,
+    calculatorEnabled: true,
+    questions: DEFAULT_QUESTIONS
+  };
+
+  function getConfig(){
+    try{
+      var raw = localStorage.getItem('cbt_config');
+      if(!raw) return DEFAULT_CONFIG;
+      var parsed = JSON.parse(raw);
+      if(!parsed.questions || !Array.isArray(parsed.questions) || parsed.questions.length === 0){
+        parsed.questions = DEFAULT_QUESTIONS;
+      }
+      return parsed;
+    }catch(e){
+      return DEFAULT_CONFIG;
+    }
+  }
+
+  function getResults(){
+    try{
+      var raw = localStorage.getItem('cbt_results');
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){
+      return [];
+    }
+  }
+
+  function getTeachers(){
+    try{
+      var raw = localStorage.getItem('cbt_teachers');
+      var list = raw ? JSON.parse(raw) : [];
+      if(!Array.isArray(list) || list.length === 0){
+        list = [{name:'Default Teacher',username:'teacher1',password:'teach123',subjects:['Mathematics']}];
+        saveTeachers(list);
+      }
+      return list;
+    }catch(e){
+      return [{name:'Default Teacher',username:'teacher1',password:'teach123',subjects:['Mathematics']}];
+    }
+  }
+
+  function saveTeachers(teachers){
+    localStorage.setItem('cbt_teachers', JSON.stringify(teachers));
+  }
+
+  function getSubjects(){
+    try{
+      var raw = localStorage.getItem('cbt_subjects');
+      var subjects = raw ? JSON.parse(raw) : ['Mathematics','English','Science'];
+      if(!Array.isArray(subjects) || subjects.length === 0){
+        subjects = ['Mathematics','English','Science'];
+      }
+      return subjects;
+    }catch(e){
+      return ['Mathematics','English','Science'];
+    }
+  }
+
+  function saveSubjects(subjects){
+    localStorage.setItem('cbt_subjects', JSON.stringify(subjects));
+  }
+
+  function getStudents(){
+    try{
+      var raw = localStorage.getItem('cbt_students');
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){
+      return [];
+    }
+  }
+
+  function saveStudents(students){
+    localStorage.setItem('cbt_students', JSON.stringify(students));
+  }
+
+  function getLogs(){
+    try{
+      var raw = localStorage.getItem('cbt_logs');
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){
+      return [];
+    }
+  }
+
+  function saveLog(entry){
+    var logs = getLogs();
+    logs.unshift(entry);
+    if(logs.length > 50) logs.length = 50;
+    localStorage.setItem('cbt_logs', JSON.stringify(logs));
+  }
+
+  function pushLog(event, actor){
+    saveLog({ time: new Date().toISOString(), event: event, actor: actor || 'Administrator' });
+  }
+
+  function showDashboard(){
+    loginGate.style.display = 'none';
+    dashboard.style.display = 'block';
+    loadConfigIntoForm();
+    renderResults();
+    renderTeachers();
+    renderSubjectList();
+    renderStudentList();
+    loadSystemOverview();
+  }
+
+  /* ---------------- LOGIN GATE ---------------- */
+  var loginGate = document.getElementById('loginGate');
+  var dashboard = document.getElementById('dashboard');
+  var loginForm = document.getElementById('loginForm');
+  var loginError = document.getElementById('loginError');
+
+  if(sessionStorage.getItem('cbt_admin_authed') === 'true'){
+    showDashboard();
+  }
+
+  loginForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    var u = document.getElementById('adminUser').value.trim();
+    var p = document.getElementById('adminPass').value;
+    if(u === ADMIN_USER && p === ADMIN_PASS){
+      sessionStorage.setItem('cbt_admin_authed', 'true');
+      loginError.textContent = '';
+      showDashboard();
+    }else{
+      loginError.textContent = 'Invalid credentials. Access denied.';
+    }
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', function(){
+    sessionStorage.removeItem('cbt_admin_authed');
+    dashboard.style.display = 'none';
+    loginGate.style.display = 'flex';
+    document.getElementById('adminPass').value = '';
+  });
+
+  /* ---------------- TABS ---------------- */
+  var tabBtns = document.querySelectorAll('.tab-btn');
+  tabBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      tabBtns.forEach(function(b){ b.classList.remove('active'); });
+      document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+      if(btn.dataset.tab === 'board'){ renderResults(); }
+    });
+  });
+
+  /* ---------------- CONFIG FORM ---------------- */
+  function loadConfigIntoForm(){
+    var cfg = getConfig();
+    document.getElementById('durationInput').value = cfg.duration || 30;
+    document.getElementById('passMarkInput').value = (cfg.passMark !== undefined) ? cfg.passMark : 20;
+    document.getElementById('calcToggle').checked = !!cfg.calculatorEnabled;
+    document.getElementById('questionBankInput').value = JSON.stringify(cfg.questions, null, 2);
+  }
+
+  function loadSystemOverview(){
+    var results = getResults();
+    var teachers = getTeachers();
+    var subjects = getSubjects();
+    var students = getStudents();
+    var active = results.filter(function(r){ return r.status === 'Completed'; }).length;
+    var terminated = results.filter(function(r){ return r.status !== 'Completed'; }).length;
+    document.getElementById('overviewStats').innerHTML =
+      '<div class="stat-box"><div class="num">' + results.length + '</div><div class="lbl">Total Exam Records</div></div>' +
+      '<div class="stat-box"><div class="num">' + active + '</div><div class="lbl">Completed Exams</div></div>' +
+      '<div class="stat-box"><div class="num">' + terminated + '</div><div class="lbl">Flagged / Terminated</div></div>' +
+      '<div class="stat-box"><div class="num">' + teachers.length + '</div><div class="lbl">Teacher Accounts</div></div>' +
+      '<div class="stat-box"><div class="num">' + students.length + '</div><div class="lbl">Registered Students</div></div>' +
+      '<div class="stat-box"><div class="num">' + subjects.length + '</div><div class="lbl">Subjects Available</div></div>';
+
+    var logs = getLogs();
+    var logBody = document.getElementById('logBody');
+    logBody.innerHTML = '';
+    if(logs.length === 0){
+      logBody.innerHTML = '<tr class="empty-row"><td colspan="3">No system logs yet. Actions will be recorded as events.</td></tr>';
+    } else {
+      logs.slice(0, 20).forEach(function(item){
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td>' + new Date(item.time).toLocaleString() + '</td>' +
+                       '<td>' + escapeHtml(item.event) + '</td>' +
+                       '<td>' + escapeHtml(item.actor || 'Administrator') + '</td>';
+        logBody.appendChild(tr);
+      });
+    }
+  }
+
+  function renderSubjectList(){
+    var subjects = getSubjects();
+    var container = document.getElementById('subjectList');
+    container.innerHTML = '';
+    if(subjects.length === 0){
+      container.textContent = 'No subjects configured.';
+      return;
+    }
+    subjects.forEach(function(subj, idx){
+      var item = document.createElement('div');
+      item.style.display = 'flex';
+      item.style.alignItems = 'center';
+      item.style.justifyContent = 'space-between';
+      item.style.marginBottom = '8px';
+      item.innerHTML = '<span>' + escapeHtml(subj) + '</span>' +
+        '<button class="btn btn-danger" style="padding:6px 10px; font-size:12px;">Delete</button>';
+      item.querySelector('button').addEventListener('click', function(){
+        var newSubjects = getSubjects().filter(function(value, index){ return index !== idx; });
+        saveSubjects(newSubjects);
+        pushLog('Deleted subject "' + subj + '"', 'Administrator');
+        renderSubjectList();
+        loadSystemOverview();
+      });
+      container.appendChild(item);
+    });
+  }
+
+  function renderStudentList(){
+    var students = getStudents();
+    var container = document.getElementById('studentList');
+    container.innerHTML = '';
+    if(students.length === 0){
+      container.textContent = 'No students registered yet.';
+      return;
+    }
+    students.forEach(function(student, idx){
+      var item = document.createElement('div');
+      item.style.display = 'flex';
+      item.style.alignItems = 'center';
+      item.style.justifyContent = 'space-between';
+      item.style.marginBottom = '8px';
+      item.innerHTML = '<span>' + escapeHtml(student.name + ' (' + student.id + ')') + '</span>' +
+        '<button class="btn btn-danger" style="padding:6px 10px; font-size:12px;">Delete</button>';
+      item.querySelector('button').addEventListener('click', function(){
+        var newStudents = getStudents().filter(function(value, index){ return index !== idx; });
+        saveStudents(newStudents);
+        pushLog('Deleted student "' + student.name + '"', 'Administrator');
+        renderStudentList();
+        loadSystemOverview();
+      });
+      container.appendChild(item);
+    });
+  }
+
+  function renderTeachers(){
+    var teachers = getTeachers();
+    var body = document.getElementById('teacherBody');
+    body.innerHTML = '';
+    if(teachers.length === 0){
+      body.innerHTML = '<tr class="empty-row"><td colspan="4">No teacher accounts have been created.</td></tr>';
+      return;
+    }
+    teachers.forEach(function(teacher, idx){
+      var tr = document.createElement('tr');
+      var subjectLabel = teacher.subjects ? teacher.subjects.join(', ') : '';
+      tr.innerHTML = '<td>' + escapeHtml(teacher.name) + '</td>' +
+                     '<td>' + escapeHtml(teacher.username) + '</td>' +
+                     '<td>' + escapeHtml(subjectLabel) + '</td>' +
+                     '<td><button class="btn btn-outline" data-action="edit">Edit</button> <button class="btn btn-danger" data-action="delete">Delete</button></td>';
+      tr.querySelector('[data-action="edit"]').addEventListener('click', function(){
+        document.getElementById('teacherNameInput').value = teacher.name;
+        document.getElementById('teacherUserInput').value = teacher.username;
+        document.getElementById('teacherPassInput').value = teacher.password;
+        document.getElementById('teacherSubjectsInput').value = subjectLabel;
+      });
+      tr.querySelector('[data-action="delete"]').addEventListener('click', function(){
+        if(!confirm('Delete teacher account "' + teacher.name + '"?')) return;
+        var updated = getTeachers().filter(function(value, index){ return index !== idx; });
+        saveTeachers(updated);
+        pushLog('Deleted teacher account "' + teacher.name + '"', 'Administrator');
+        renderTeachers();
+        loadSystemOverview();
+      });
+      body.appendChild(tr);
+    });
+  }
+
+  function clearTeacherForm(){
+    document.getElementById('teacherNameInput').value = '';
+    document.getElementById('teacherUserInput').value = '';
+    document.getElementById('teacherPassInput').value = '';
+    document.getElementById('teacherSubjectsInput').value = '';
+    document.getElementById('teacherSaveMsg').textContent = '';
+  }
+
+  document.getElementById('addSubjectBtn').addEventListener('click', function(){
+    var val = document.getElementById('newSubjectInput').value.trim();
+    if(!val){ return; }
+    var subjects = getSubjects();
+    if(subjects.indexOf(val) === -1){
+      subjects.push(val);
+      saveSubjects(subjects);
+      document.getElementById('newSubjectInput').value = '';
+      pushLog('Added subject "' + val + '"', 'Administrator');
+      renderSubjectList();
+      loadSystemOverview();
+    }
+  });
+
+  document.getElementById('addStudentBtn').addEventListener('click', function(){
+    var raw = document.getElementById('newStudentInput').value.trim();
+    if(!raw){ return; }
+    var split = raw.split('-');
+    var student = {name: split[0].trim(), id: split[1] ? split[1].trim() : ''};
+    if(!student.name || !student.id){
+      alert('Enter student name and ID separated by a hyphen.');
+      return;
+    }
+    var students = getStudents();
+    students.push(student);
+    saveStudents(students);
+    document.getElementById('newStudentInput').value = '';
+    pushLog('Added student "' + student.name + '"', 'Administrator');
+    renderStudentList();
+    loadSystemOverview();
+  });
+
+  document.getElementById('saveTeacherBtn').addEventListener('click', function(){
+    var name = document.getElementById('teacherNameInput').value.trim();
+    var username = document.getElementById('teacherUserInput').value.trim();
+    var password = document.getElementById('teacherPassInput').value;
+    var subjects = document.getElementById('teacherSubjectsInput').value.split(',').map(function(v){ return v.trim(); }).filter(function(v){ return v; });
+    var msg = document.getElementById('teacherSaveMsg');
+    if(!name || !username || !password){
+      msg.style.color = '#a12626';
+      msg.textContent = 'Name, username and password are required.';
+      return;
+    }
+    var teachers = getTeachers();
+    var existingIndex = teachers.findIndex(function(t){ return t.username === username; });
+    if(existingIndex !== -1){
+      teachers[existingIndex] = {name: name, username: username, password: password, subjects: subjects};
+      pushLog('Updated teacher account "' + name + '"', 'Administrator');
+    } else {
+      teachers.push({name: name, username: username, password: password, subjects: subjects});
+      pushLog('Created teacher account "' + name + '"', 'Administrator');
+    }
+    saveTeachers(teachers);
+    renderTeachers();
+    loadSystemOverview();
+    msg.style.color = '#1f6f43';
+    msg.textContent = 'Teacher account saved successfully.';
+    setTimeout(function(){ msg.textContent = ''; }, 4000);
+    clearTeacherForm();
+  });
+
+  document.getElementById('clearTeacherBtn').addEventListener('click', function(){
+    clearTeacherForm();
+  });
+
+  document.getElementById('saveConfigBtn').addEventListener('click', function(){
+    var msg = document.getElementById('saveMsg');
+    var duration = parseInt(document.getElementById('durationInput').value, 10);
+    var passMark = parseInt(document.getElementById('passMarkInput').value, 10);
+    var calcEnabled = document.getElementById('calcToggle').checked;
+    var rawBank = document.getElementById('questionBankInput').value;
+
+    var parsedBank;
+    try{
+      parsedBank = JSON.parse(rawBank);
+      if(!Array.isArray(parsedBank) || parsedBank.length === 0){
+        throw new Error('Question bank must be a non-empty JSON array.');
+      }
+      parsedBank.forEach(function(q, idx){
+        if(typeof q.q !== 'string' || !Array.isArray(q.options) || typeof q.correct !== 'number'){
+          throw new Error('Malformed question at index ' + idx + '.');
+        }
+      });
+    }catch(err){
+      msg.style.color = '#a12626';
+      msg.textContent = 'Error: Invalid question bank JSON \u2014 ' + err.message;
+      return;
+    }
+
+    var config = {
+      duration: isNaN(duration) ? 30 : duration,
+      passMark: isNaN(passMark) ? 20 : passMark,
+      calculatorEnabled: calcEnabled,
+      questions: parsedBank
+    };
+    localStorage.setItem('cbt_config', JSON.stringify(config));
+    msg.style.color = '#1f6f43';
+    msg.textContent = 'Settings saved successfully — ' + parsedBank.length + ' question(s) active.';
+    pushLog('Saved exam configuration', 'Administrator');
+    loadSystemOverview();
+    setTimeout(function(){ msg.textContent = ''; }, 4000);
+  });
+
+  document.getElementById('resetConfigBtn').addEventListener('click', function(){
+    if(!confirm('Restore the default 40-question math bank? Unsaved edits will be lost.')) return;
+    document.getElementById('questionBankInput').value = JSON.stringify(DEFAULT_QUESTIONS, null, 2);
+    pushLog('Restored default question bank', 'Administrator');
+    loadSystemOverview();
+  });
+
+  /* ---------------- LEADERBOARD ---------------- */
+  function renderResults(){
+    var results = getResults();
+    var tbody = document.getElementById('resultsBody');
+    var statsRow = document.getElementById('statsRow');
+    tbody.innerHTML = '';
+
+    var completed = results.filter(function(r){ return r.status === 'Completed'; }).length;
+    var terminated = results.filter(function(r){ return r.status === 'TERMINATED FOR CHEATING'; }).length;
+    var avgScore = results.length ? (results.reduce(function(s,r){ return s + (r.score||0); }, 0) / results.length).toFixed(1) : '0.0';
+
+    statsRow.innerHTML =
+      '<div class="stat-box"><div class="num">' + results.length + '</div><div class="lbl">Total Attempts</div></div>' +
+      '<div class="stat-box"><div class="num">' + completed + '</div><div class="lbl">Completed</div></div>' +
+      '<div class="stat-box"><div class="num">' + terminated + '</div><div class="lbl">Terminated</div></div>' +
+      '<div class="stat-box"><div class="num">' + avgScore + '</div><div class="lbl">Average Score</div></div>';
+
+    if(results.length === 0){
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No examination records yet. Results will appear here once students submit their tests.</td></tr>';
+      return;
+    }
+
+    results.slice().reverse().forEach(function(r){
+      var tr = document.createElement('tr');
+      var statusClass = r.status === 'Completed' ? 'completed' : 'terminated';
+      var dateStr = r.timestamp ? new Date(r.timestamp).toLocaleString() : '—';
+      tr.innerHTML =
+        '<td>' + escapeHtml(r.studentId) + '</td>' +
+        '<td>' + escapeHtml(r.studentName) + '</td>' +        '<td>' + escapeHtml(r.subject || 'General') + '</td>' +        '<td>' + r.score + ' / ' + r.total + '</td>' +
+        '<td>' + r.infractions + '</td>' +
+        '<td><span class="badge ' + statusClass + '">' + escapeHtml(r.status) + '</span></td>' +
+        '<td>' + dateStr + '</td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  function escapeHtml(str){
+    if(str === undefined || str === null) return '';
+    return String(str).replace(/[&<>"']/g, function(m){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];
+    });
+  }
+
+  document.getElementById('exportBtn').addEventListener('click', function(){
+    var results = getResults();
+    if(results.length === 0){ alert('No records to export.'); return; }
+    var headers = ['Student ID','Student Name','Score','Total','Infractions','Status','Timestamp'];
+    var rows = results.map(function(r){
+      return [r.studentId, r.studentName, r.score, r.total, r.infractions, r.status, r.timestamp || ''].map(function(v){
+        var s = String(v === undefined || v === null ? '' : v).replace(/"/g,'""');
+        return '"' + s + '"';
+      }).join(',');
+    });
+    var csv = headers.join(',') + '\n' + rows.join('\n');
+    var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'excellence_academy_gradebook_' + Date.now() + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('clearBtn').addEventListener('click', function(){
+    if(!confirm('This will permanently erase all exam records from the database. Continue?')) return;
+    localStorage.removeItem('cbt_results');
+    pushLog('Cleared all exam records', 'Administrator');
+    renderResults();
+    loadSystemOverview();
+  });
+
+})();
+</script>
+</body>
+</html>

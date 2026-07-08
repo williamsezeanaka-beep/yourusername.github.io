@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examination Center | Excellence Academy</title>
+<style>
+  :root{
+    --navy:#002b49;
+    --navy-deep:#001a2e;
+    --gold:#b8860b;
+    --gold-light:#d4a017;
+    --slate:#4b5563;
+    --slate-light:#8a94a3;
+    --white:#ffffff;
+    --paper:#f7f5f0;
+    --red:#a12626;
+    --green:#1f6f43;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:'Segoe UI',Georgia,serif;
+    background:var(--paper);
+    color:var(--navy-deep);
+    min-height:100vh;
+    -webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;
+  }
+  ::selection{background:transparent;}
+
+  .screen{display:none;min-height:100vh;}
+  .screen.active{display:flex;}
+
+  /* ============ LOGIN SCREEN ============ */
+  #loginScreen{
+    background:linear-gradient(160deg,var(--navy-deep),var(--navy) 60%,var(--navy-deep));
+    align-items:center;justify-content:center;padding:24px;
+  }
+  .login-panel{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(184,134,11,0.4);
+    border-radius:4px;
+    padding:44px 40px;
+    width:100%;max-width:420px;color:#fff;
+  }
+  .login-panel .crest{
+    width:56px;height:56px;margin:0 auto 16px auto;border:2px solid var(--gold);
+    border-radius:50%;display:flex;align-items:center;justify-content:center;
+    color:var(--gold-light);font-weight:bold;
+  }
+  .login-panel h1{
+    font-size:20px;font-weight:400;letter-spacing:1px;color:var(--gold-light);
+    text-align:center;margin-bottom:6px;font-family:Georgia,serif;
+  }
+  .login-panel p.sub{font-size:12.5px;color:#a9b4c2;text-align:center;margin-bottom:26px;}
+  .field{margin-bottom:16px;text-align:left;}
+  .field label{display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-light);margin-bottom:6px;}
+  .field input{
+    width:100%;padding:11px 12px;background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.18);color:#fff;border-radius:2px;font-size:14px;font-family:Georgia,serif;
+  }
+  .field input:focus{outline:none;border-color:var(--gold);}
+  .btn-gold{
+    width:100%;padding:12px;background:var(--gold);color:var(--navy-deep);border:none;
+    font-weight:bold;letter-spacing:2px;text-transform:uppercase;font-size:12.5px;
+    border-radius:2px;cursor:pointer;margin-top:8px;
+  }
+  .btn-gold:hover{background:var(--gold-light);}
+  #loginErr{color:#ff9d9d;font-size:12.5px;margin-top:14px;min-height:16px;text-align:center;}
+
+  /* ============ RULES / SETUP SCREEN ============ */
+  #setupScreen{
+    align-items:center;justify-content:center;padding:24px;
+    background:var(--paper);
+  }
+  .setup-card{
+    background:#fff;border:1px solid #e4ddcf;border-radius:4px;
+    max-width:620px;width:100%;padding:40px;box-shadow:0 6px 30px rgba(0,43,73,0.1);
+  }
+  .setup-card h1{
+    font-size:22px;color:var(--navy);font-weight:400;margin-bottom:4px;font-family:Georgia,serif;
+  }
+  .setup-card .greet{font-size:13px;color:var(--slate);margin-bottom:22px;}
+  .rules-list{list-style:none;margin-bottom:26px;}
+  .rules-list li{
+    padding:12px 0;border-bottom:1px solid #ede7d8;font-size:13.5px;color:var(--navy-deep);
+    display:flex;gap:12px;align-items:flex-start;line-height:1.5;
+  }
+  .rules-list li .bullet{
+    color:var(--gold);font-weight:bold;min-width:18px;font-size:16px;
+  }
+  .exam-meta{
+    display:flex;gap:20px;flex-wrap:wrap;margin-bottom:26px;
+    background:var(--paper);border:1px solid #e4ddcf;padding:16px 18px;border-radius:3px;
+  }
+  .exam-meta div{font-size:12.5px;color:var(--slate);}
+  .exam-meta strong{display:block;color:var(--navy);font-size:16px;font-family:Georgia,serif;}
+  .btn-start{
+    width:100%;padding:15px;background:var(--navy);color:#fff;border:none;
+    font-weight:bold;letter-spacing:2px;text-transform:uppercase;font-size:13px;
+    border-radius:3px;cursor:pointer;transition:background .2s ease;
+  }
+  .btn-start:hover{background:var(--navy-deep);}
+
+  /* ============ EXAM SCREEN ============ */
+  #examScreen{
+    flex-direction:column;background:var(--paper);
+  }
+  .exam-header{
+    background:var(--navy-deep);color:#fff;padding:14px 26px;
+    display:flex;align-items:center;justify-content:space-between;
+    border-bottom:3px solid var(--gold);flex-wrap:wrap;gap:10px;
+  }
+  .exam-header .id-info{font-size:12.5px;color:#c9d3de;}
+  .exam-header .id-info strong{color:#fff;}
+  .timer-box{
+    background:rgba(184,134,11,0.15);border:1px solid var(--gold);
+    padding:8px 18px;border-radius:3px;font-size:18px;font-weight:bold;
+    color:var(--gold-light);font-family:'Courier New',monospace;letter-spacing:1px;
+  }
+  .timer-box.low{color:#ff9d9d;border-color:#ff9d9d;background:rgba(161,38,38,0.15);}
+  .infraction-badge{
+    font-size:11.5px;background:rgba(161,38,38,0.2);color:#ffb3b3;
+    padding:6px 12px;border-radius:12px;border:1px solid rgba(161,38,38,0.4);
+  }
+
+  .exam-body{flex:1;max-width:900px;width:100%;margin:0 auto;padding:30px 20px 100px 20px;}
+  .exam-columns{display:grid;grid-template-columns:1fr 1.2fr;gap:20px;align-items:flex-start;}
+  .passage-panel{background:#f8faf7;border:1px solid #e5e1d8;border-radius:6px;padding:22px;min-height:320px;display:none;}
+  .passage-label{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px;}
+  .passage-content{font-size:15px;line-height:1.8;color:var(--navy-deep);white-space:pre-wrap;}
+  .question-panel{display:flex;flex-direction:column;gap:18px;}
+  .short-answer-panel input{width:100%;}
+  @media(max-width:900px){.exam-columns{grid-template-columns:1fr;}}
+
+  .progress-track{
+    height:5px;background:#e0d9c8;border-radius:4px;overflow:hidden;margin-bottom:26px;
+  }
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));width:0%;transition:width .3s ease;}
+
+  .q-card{
+    background:#fff;border:1px solid #e4ddcf;border-radius:4px;padding:30px 28px;
+    box-shadow:0 2px 10px rgba(0,43,73,0.05);
+  }
+  .q-eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:bold;margin-bottom:10px;}
+  .q-text{font-size:19px;color:var(--navy-deep);margin-bottom:26px;line-height:1.5;font-family:Georgia,serif;}
+  .opt-list{display:flex;flex-direction:column;gap:12px;}
+  .opt{
+    border:1.5px solid #d9d2c0;border-radius:3px;padding:14px 16px;
+    display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .15s ease;font-size:14.5px;
+  }
+  .opt:hover{border-color:var(--gold-light);background:#fdf9f0;}
+  .opt.selected{border-color:var(--gold);background:#fbf1dc;font-weight:600;}
+  .opt .letter{
+    width:26px;height:26px;border-radius:50%;border:1.5px solid var(--slate-light);
+    display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;color:var(--slate);
+    flex-shrink:0;
+  }
+  .opt.selected .letter{background:var(--gold);border-color:var(--gold);color:#fff;}
+
+  .nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:26px;flex-wrap:wrap;gap:12px;}
+  .btn-nav{
+    padding:12px 24px;border-radius:3px;border:1px solid var(--navy);background:transparent;
+    color:var(--navy);font-size:12.5px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-weight:bold;
+  }
+  .btn-nav:hover{background:var(--navy);color:#fff;}
+  .btn-nav:disabled{opacity:0.35;cursor:not-allowed;}
+  .btn-submit{
+    padding:12px 28px;border-radius:3px;border:none;background:var(--gold);
+    color:var(--navy-deep);font-size:12.5px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-weight:bold;
+  }
+  .btn-submit:hover{background:var(--gold-light);}
+
+  .q-jump{display:flex;flex-wrap:wrap;gap:6px;margin-top:22px;}
+  .q-jump button{
+    width:30px;height:30px;border-radius:3px;border:1px solid #d9d2c0;background:#fff;
+    font-size:11.5px;cursor:pointer;color:var(--slate);
+  }
+  .q-jump button.answered{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .q-jump button.current{border-color:var(--gold);border-width:2px;color:var(--navy);font-weight:bold;}
+
+  /* ============ FULLSCREEN LOCK OVERLAY ============ */
+  #lockOverlay{
+    position:fixed;inset:0;z-index:9999;display:none;
+    align-items:center;justify-content:center;flex-direction:column;
+    background:rgba(161,38,38,0.97);color:#fff;text-align:center;padding:24px;
+  }
+  #lockOverlay.flash{animation:flashBg 1s infinite;}
+  @keyframes flashBg{
+    0%,100%{background:rgba(161,38,38,0.97);}
+    50%{background:rgba(90,15,15,0.98);}
+  }
+  #lockOverlay .lock-icon{font-size:56px;margin-bottom:18px;}
+  #lockOverlay h2{font-size:26px;margin-bottom:12px;letter-spacing:1px;}
+  #lockOverlay p{font-size:14.5px;max-width:480px;line-height:1.7;margin-bottom:8px;color:#ffe1e1;}
+  #lockOverlay .infraction-count{font-size:15px;font-weight:bold;margin:14px 0 22px 0;color:#fff;background:rgba(0,0,0,0.25);padding:8px 20px;border-radius:20px;}
+  #lockOverlay button{
+    padding:14px 32px;border-radius:3px;border:2px solid #fff;background:transparent;color:#fff;
+    font-size:13px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-weight:bold;
+  }
+  #lockOverlay button:hover{background:#fff;color:var(--red);}
+
+  /* ============ TERMINATION SCREEN ============ */
+  #terminatedScreen{
+    align-items:center;justify-content:center;background:var(--navy-deep);color:#fff;padding:24px;
+  }
+  .term-box{text-align:center;max-width:520px;}
+  .term-box .lock-icon{font-size:60px;color:#ff9d9d;margin-bottom:18px;}
+  .term-box h1{font-size:26px;color:#ff9d9d;margin-bottom:14px;letter-spacing:1px;}
+  .term-box p{font-size:14.5px;color:#c9d3de;line-height:1.7;margin-bottom:26px;}
+
+  /* ============ RESULT SCREEN ============ */
+  #resultScreen{
+    align-items:center;justify-content:center;padding:24px;
+    background:linear-gradient(160deg,var(--navy-deep),var(--navy) 60%,var(--navy-deep));
+  }
+  .result-card{
+    background:rgba(255,255,255,0.05);border:1px solid rgba(184,134,11,0.4);border-radius:4px;
+    padding:46px 44px;text-align:center;max-width:460px;width:100%;color:#fff;
+  }
+  .result-card .score-ring{
+    width:130px;height:130px;border-radius:50%;border:4px solid var(--gold);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    margin:0 auto 22px auto;
+  }
+  .result-card .score-ring .num{font-size:34px;font-weight:bold;color:var(--gold-light);font-family:Georgia,serif;}
+  .result-card .score-ring .of{font-size:12px;color:#a9b4c2;}
+  .result-card h1{font-size:22px;font-weight:400;margin-bottom:10px;color:var(--gold-light);}
+  .result-card p{font-size:13.5px;color:#c9d3de;margin-bottom:6px;}
+  .redirect-note{font-size:12px;color:#8a94a3;margin-top:24px;}
+
+  /* ============ CALCULATOR WIDGET ============ */
+  #calcToggleBtn{
+    position:fixed;bottom:24px;right:24px;z-index:500;
+    width:52px;height:52px;border-radius:50%;background:var(--navy);color:var(--gold-light);
+    border:2px solid var(--gold);font-size:22px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.3);
+    display:none;align-items:center;justify-content:center;
+  }
+  #calcToggleBtn.show{display:flex;}
+
+  #calcWidget{
+    position:fixed;top:120px;right:24px;z-index:600;
+    width:230px;background:#2b2b2b;border-radius:8px;border:3px solid #444;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);display:none;font-family:'Courier New',monospace;
+  }
+  #calcWidget.show{display:block;}
+  .calc-head{
+    background:var(--gold);color:var(--navy-deep);padding:8px 12px;border-radius:5px 5px 0 0;
+    display:flex;justify-content:space-between;align-items:center;cursor:move;font-size:11px;font-weight:bold;letter-spacing:1px;
+  }
+  .calc-head span.close{cursor:pointer;font-size:15px;line-height:1;}
+  .calc-screen{
+    background:#c8d6c0;color:#1a1a1a;margin:10px;padding:12px 10px;border-radius:3px;
+    text-align:right;font-size:24px;min-height:34px;overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,0.3);
+    word-break:break-all;
+  }
+  .calc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:0 10px 12px 10px;}
+  .calc-grid button{
+    padding:12px 0;border:none;border-radius:4px;background:#4a4a4a;color:#fff;font-size:14px;
+    cursor:pointer;box-shadow:0 2px 0 #222;
+  }
+  .calc-grid button:active{transform:translateY(1px);box-shadow:none;}
+  .calc-grid button.op{background:var(--gold);color:var(--navy-deep);font-weight:bold;}
+  .calc-grid button.eq{background:var(--navy);color:var(--gold-light);grid-column:span 2;font-weight:bold;}
+  .calc-grid button.clear{background:var(--red);color:#fff;}
+
+  @media(max-width:520px){
+    .setup-card, .login-panel{padding:28px 22px;}
+    .q-card{padding:22px 18px;}
+    .exam-body{padding:20px 12px 100px 12px;}
+    #calcWidget{right:12px;top:100px;width:200px;}
+  }
+</style>
+</head>
+<body oncontextmenu="return false;">
+
+  <!-- ============ LOGIN SCREEN ============ -->
+  <div class="screen active" id="loginScreen">
+    <div class="login-panel">
+      <div class="crest">EA</div>
+      <h1>Examination Center</h1>
+      <p class="sub">Please authenticate to proceed to the exam briefing.</p>
+      <form id="studentLoginForm">
+        <div class="field">
+          <label>Student ID</label>
+          <input type="text" id="studentIdInput" required autocomplete="off">
+        </div>
+        <div class="field">
+          <label>Full Name</label>
+          <input type="text" id="studentNameInput" required autocomplete="off">
+        </div>
+        <button type="submit" class="btn-gold">Proceed to Briefing</button>
+      </form>
+      <div id="loginErr"></div>
+    </div>
+  </div>
+
+  <!-- ============ SETUP / RULES SCREEN ============ -->
+  <div class="screen" id="setupScreen">
+    <div class="setup-card">
+      <h1>Examination Briefing</h1>
+      <p class="greet" id="greetLine"></p>
+
+      <div class="exam-meta">
+        <div><strong id="metaDuration">--</strong>Minutes Duration</div>
+        <div><strong id="metaQCount">--</strong>Total Questions</div>
+        <div><strong id="metaPass">--</strong>Pass Mark</div>
+        <div><strong>Select Subject</strong>
+          <select id="subjectSelect" style="margin-top:6px;width:100%;padding:10px 12px;border:1px solid #d7d0c2;border-radius:4px;background:#fff;color:#1f3a5a;"></select>
+        </div>
+      </div>
+
+      <ul class="rules-list">
+        <li><span class="bullet">&#9670;</span> This exam requires <strong>full-screen mode</strong>. Exiting full-screen at any point will lock your session and log an infraction.</li>
+        <li><span class="bullet">&#9670;</span> Switching tabs, opening another window, or minimizing this application will log a <strong>tab-switch infraction</strong>.</li>
+        <li><span class="bullet">&#9670;</span> Accumulating <strong>more than 2 infractions</strong> will result in automatic termination and a failed, flagged attempt.</li>
+        <li><span class="bullet">&#9670;</span> Right-click, copy, paste, printing, and developer tools are disabled throughout the session.</li>
+        <li><span class="bullet">&#9670;</span> The exam auto-submits when the timer expires, regardless of completion.</li>
+      </ul>
+
+      <button class="btn-start" id="beginExamBtn">Enter Full-Screen &amp; Begin Exam</button>
+    </div>
+  </div>
+
+  <!-- ============ EXAM SCREEN ============ -->
+  <div class="screen" id="examScreen">
+    <div class="exam-header">
+      <div class="id-info">Candidate: <strong id="hdrName"></strong> &nbsp;|&nbsp; ID: <strong id="hdrId"></strong></div>
+      <div class="infraction-badge" id="infractionBadge">Infractions: 0 / 2</div>
+      <div class="timer-box" id="timerBox">30:00</div>
+    </div>
+
+    <div class="exam-body">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+      <div class="exam-columns">
+        <aside class="passage-panel" id="passagePanel">
+          <div class="passage-label">Passage</div>
+          <div class="passage-content" id="passageContent"></div>
+        </aside>
+        <div class="question-panel">
+          <div class="q-card">
+            <div class="q-eyebrow" id="qEyebrow">QUESTION 1 OF 40</div>
+            <div class="q-text" id="qText"></div>
+            <div class="opt-list" id="optList"></div>
+            <div class="short-answer-panel" id="shortAnswerPanel" style="display:none; margin-top:18px;">
+              <label style="display:block;font-size:14px;color:var(--navy);margin-bottom:8px;font-weight:700;">Your Answer</label>
+              <input type="text" id="shortAnswerField" style="width:100%;padding:12px 14px;border:1px solid #d7d0c2;border-radius:4px;font-size:15px;">
+            </div>
+          </div>
+
+          <div class="nav-row">
+            <button class="btn-nav" id="prevBtn">&larr; Previous</button>
+            <button class="btn-submit" id="submitBtn">Submit Examination</button>
+            <button class="btn-nav" id="nextBtn">Next &rarr;</button>
+          </div>
+
+          <div class="q-jump" id="qJump"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TERMINATED SCREEN ============ -->
+  <div class="screen" id="terminatedScreen">
+    <div class="term-box">
+      <div class="lock-icon">&#9888;</div>
+      <h1>TERMINATED FOR CHEATING</h1>
+      <p>Your examination session has been permanently terminated due to repeated integrity
+        violations (exceeding the maximum of 2 infractions). This attempt has been recorded
+        and flagged for faculty review. You will be redirected to the main gate shortly.</p>
+    </div>
+  </div>
+
+  <!-- ============ RESULT SCREEN ============ -->
+  <div class="screen" id="resultScreen">
+    <div class="result-card">
+      <div class="score-ring">
+        <div class="num" id="finalScoreNum">0</div>
+        <div class="of" id="finalScoreOf">out of 40</div>
+      </div>
+      <h1>Examination Submitted</h1>
+      <p id="resultNameLine"></p>
+      <p id="resultStatusLine"></p>
+      <p class="redirect-note">Redirecting to the Main Gate...</p>
+    </div>
+  </div>
+
+  <!-- ============ FULLSCREEN LOCK OVERLAY ============ -->
+  <div id="lockOverlay">
+    <div class="lock-icon">&#128274;</div>
+    <h2>SECURITY BREACH DETECTED</h2>
+    <p>You exited full-screen mode. Your exam has been paused and this action has been logged as an infraction.</p>
+    <div class="infraction-count" id="overlayInfractionCount">Infractions: 1 / 2</div>
+    <button id="resumeBtn">Resume Full-Screen &amp; Continue</button>
+  </div>
+
+  <!-- ============ CALCULATOR WIDGET ============ -->
+  <button id="calcToggleBtn" title="Toggle Calculator">&#128290;</button>
+  <div id="calcWidget">
+    <div class="calc-head" id="calcHead">
+      <span>KAPEK CALC</span>
+      <span class="close" id="calcCloseBtn">&times;</span>
+    </div>
+    <div class="calc-screen" id="calcScreen">0</div>
+    <div class="calc-grid">
+      <button class="clear" data-k="C">C</button>
+      <button data-k="(">(</button>
+      <button data-k=")">)</button>
+      <button class="op" data-k="^">^</button>
+      <button class="op" data-k="sqrt">√</button>
+
+      <button class="op" data-k="sin(">sin</button>
+      <button class="op" data-k="cos(">cos</button>
+      <button class="op" data-k="tan(">tan</button>
+      <button class="op" data-k="log(">log</button>
+      <button class="op" data-k="ln(">ln</button>
+
+      <button data-k="7">7</button>
+      <button data-k="8">8</button>
+      <button data-k="9">9</button>
+      <button class="op" data-k="*">×</button>
+      <button class="op" data-k="π">π</button>
+
+      <button data-k="4">4</button>
+      <button data-k="5">5</button>
+      <button data-k="6">6</button>
+      <button class="op" data-k="-">−</button>
+      <button class="op" data-k="e">e</button>
+
+      <button data-k="1">1</button>
+      <button data-k="2">2</button>
+      <button data-k="3">3</button>
+      <button class="op" data-k="+">+</button>
+      <button class="eq" data-k="=">=</button>
+
+      <button data-k="0">0</button>
+      <button data-k=".">.</button>
+      <button class="op" data-k="ans">ANS</button>
+      <button class="op" data-k="%">%</button>
+      <button class="op" data-k="del">DEL</button>
+    </div>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =====================================================
+     CONFIG & STATE
+  ===================================================== */
+  var DEFAULT_QUESTIONS = [{"q":"What is 91 + 24?","options":["122","112","115","116"],"correct":2},{"q":"What is 96 + 79?","options":["176","170","184","175"],"correct":3},{"q":"What is 37 + 39?","options":["76","82","71","81"],"correct":0},{"q":"What is 38 + 67?","options":["105","111","102","110"],"correct":0},{"q":"What is 53 + 45?","options":["96","100","106","98"],"correct":3},{"q":"What is 22 + 55?","options":["85","80","72","77"],"correct":3},{"q":"What is 78 + 25?","options":["103","107","113","102"],"correct":0},{"q":"What is 83 + 34?","options":["118","124","117","116"],"correct":2},{"q":"What is 22 + 58?","options":["80","76","88","83"],"correct":0},{"q":"What is 36 + 95?","options":["141","131","130","134"],"correct":1},{"q":"What is 70 - 39?","options":["35","38","31","28"],"correct":2},{"q":"What is 54 - 30?","options":["24","30","21","28"],"correct":0},{"q":"What is 77 - 41?","options":["40","43","36","32"],"correct":2},{"q":"What is 145 - 45?","options":["97","100","105","109"],"correct":1},{"q":"What is 67 - 42?","options":["29","24","31","25"],"correct":3},{"q":"What is 137 - 37?","options":["100","105","99","109"],"correct":0},{"q":"What is 117 - 26?","options":["91","96","97","90"],"correct":0},{"q":"What is 64 - 28?","options":["45","40","34","36"],"correct":3},{"q":"What is 10 × 4?","options":["37","40","46","41"],"correct":1},{"q":"What is 10 × 10?","options":["97","101","108","100"],"correct":3},{"q":"What is 6 × 5?","options":["35","31","28","30"],"correct":3},{"q":"What is 3 × 10?","options":["30","28","38","32"],"correct":0},{"q":"What is 5 × 10?","options":["50","58","52","47"],"correct":0},{"q":"What is 3 × 5?","options":["17","22","14","15"],"correct":3},{"q":"What is 11 × 5?","options":["60","54","55","56"],"correct":2},{"q":"What is 7 × 3?","options":["29","21","18","23"],"correct":1},{"q":"What is 121 ÷ 11?","options":["10","12","11","13"],"correct":2},{"q":"What is 40 ÷ 8?","options":["4","6","7","5"],"correct":3},{"q":"What is 56 ÷ 7?","options":["7","8","9","10"],"correct":1},{"q":"What is 144 ÷ 12?","options":["11","13","14","12"],"correct":3},{"q":"What is 21 ÷ 7?","options":["5","2","3","4"],"correct":2},{"q":"What is 90 ÷ 10?","options":["8","9","11","10"],"correct":1},{"q":"Solve for x: x + 15 = 24","options":["8","11","9","10"],"correct":2},{"q":"Solve for x: x + 4 = 22","options":["19","20","17","18"],"correct":3},{"q":"Solve for x: x + 8 = 11","options":["3","2","5","4"],"correct":0},{"q":"Solve for x: x + 7 = 23","options":["17","15","16","18"],"correct":2},{"q":"What is 25% of 200?","options":["48","52","50","55"],"correct":2},{"q":"What is 10% of 90?","options":["9","14","11","7"],"correct":0},{"q":"What is the square of 7?","options":["49","51","47","54"],"correct":0},{"q":"What is the square root of 81?","options":["7","14","9","11"],"correct":2}];
+
+  var DEFAULT_CONFIG = {
+    duration: 30,
+    passMark: 20,
+    calculatorEnabled: true,
+    questions: DEFAULT_QUESTIONS
+  };
+
+  function getConfig(){
+    try{
+      var raw = localStorage.getItem('cbt_config');
+      if(!raw) return DEFAULT_CONFIG;
+      var parsed = JSON.parse(raw);
+      if(!parsed.questions || !Array.isArray(parsed.questions) || parsed.questions.length === 0){
+        parsed.questions = DEFAULT_QUESTIONS;
+      }
+      return parsed;
+    }catch(e){
+      return DEFAULT_CONFIG;
+    }
+  }
+
+  function getSubjects(){
+    try{
+      var raw = localStorage.getItem('cbt_subjects');
+      var subjects = raw ? JSON.parse(raw) : [];
+      return Array.isArray(subjects) && subjects.length ? subjects : ['Mathematics','English','Science'];
+    }catch(e){
+      return ['Mathematics','English','Science'];
+    }
+  }
+
+  function fillSubjectSelect(){
+    var subjects = getSubjects();
+    var select = document.getElementById('subjectSelect');
+    if(!select) return;
+    select.innerHTML = '<option value="all">All Subjects</option>' + subjects.map(function(subject){
+      return '<option value="' + escapeHtml(subject) + '">' + escapeHtml(subject) + '</option>';
+    }).join('');
+  }
+
+  function saveResult(result){
+    var results = [];
+    try{
+      var raw = localStorage.getItem('cbt_results');
+      results = raw ? JSON.parse(raw) : [];
+    }catch(e){ results = []; }
+    results.push(result);
+    localStorage.setItem('cbt_results', JSON.stringify(results));
+  }
+
+  var config = getConfig();
+  var state = {
+    studentId: '',
+    studentName: '',
+    questions: [],
+    answers: [],
+    currentIndex: 0,
+    durationSeconds: 0,
+    remainingSeconds: 0,
+    timerHandle: null,
+    infractions: 0,
+    examActive: false,
+    examFinished: false,
+    lockActive: false
+  };
+
+  function shuffleCopy(arr){
+    var a = arr.slice();
+    for(var i = a.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i+1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  /* =====================================================
+     SCREEN MANAGEMENT
+  ===================================================== */
+  function showScreen(id){
+    document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+  }
+
+  /* =====================================================
+     LOGIN
+  ===================================================== */
+  document.getElementById('studentLoginForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var id = document.getElementById('studentIdInput').value.trim();
+    var name = document.getElementById('studentNameInput').value.trim();
+    var err = document.getElementById('loginErr');
+    if(!id || !name){
+      err.textContent = 'Please provide both your Student ID and Full Name.';
+      return;
+    }
+    err.textContent = '';
+    state.studentId = id;
+    state.studentName = name;
+    prepareSetupScreen();
+    showScreen('setupScreen');
+  });
+
+  function prepareSetupScreen(){
+    config = getConfig();
+    document.getElementById('greetLine').textContent =
+      'Welcome, ' + state.studentName + '. Please review the examination protocol below before proceeding.';
+    document.getElementById('metaDuration').textContent = config.duration;
+    document.getElementById('metaQCount').textContent = config.questions.length;
+    document.getElementById('metaPass').textContent = (config.passMark !== undefined ? config.passMark : 20) + ' / ' + config.questions.length;
+    fillSubjectSelect();
+
+    if(config.calculatorEnabled){
+      document.getElementById('calcToggleBtn').classList.add('show');
+    }else{
+      document.getElementById('calcToggleBtn').classList.remove('show');
+    }
+  }
+
+  /* =====================================================
+     BEGIN EXAM -> REQUEST FULLSCREEN
+  ===================================================== */
+  document.getElementById('beginExamBtn').addEventListener('click', function(){
+    var el = document.documentElement;
+    var req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+    if(req){
+      req.call(el).then(startExam).catch(function(){
+        alert('Full-screen permission is required to begin the exam. Please allow full-screen and try again.');
+      });
+    }else{
+      alert('Your browser does not support full-screen mode, which is required for this exam.');
+    }
+  });
+
+  function startExam(){
+    var subject = document.getElementById('subjectSelect') ? document.getElementById('subjectSelect').value : 'all';
+    state.subject = subject === 'all' ? null : subject;
+    var pool = config.questions.filter(function(q){
+      if(state.subject === null) return true;
+      return q.subject === state.subject;
+    });
+    if(pool.length === 0){
+      alert('No questions are available for the selected subject. Please choose another subject or contact your instructor.');
+      return;
+    }
+    state.questions = shuffleCopy(pool);
+    state.answers = new Array(state.questions.length).fill(null);
+    state.currentIndex = 0;
+    state.durationSeconds = (config.duration || 30) * 60;
+    state.remainingSeconds = state.durationSeconds;
+    state.infractions = 0;
+    state.examActive = true;
+    state.examFinished = false;
+    state.subject = state.subject || 'All Subjects';
+
+    document.getElementById('hdrName').textContent = state.studentName;
+    document.getElementById('hdrId').textContent = state.studentId;
+    updateInfractionBadge();
+
+    showScreen('examScreen');
+    renderQuestion();
+    startTimer();
+  }
+
+  /* =====================================================
+     TIMER
+  ===================================================== */
+  function startTimer(){
+    updateTimerDisplay();
+    state.timerHandle = setInterval(function(){
+      if(!state.examActive || state.lockActive) return;
+      state.remainingSeconds--;
+      updateTimerDisplay();
+      if(state.remainingSeconds <= 0){
+        clearInterval(state.timerHandle);
+        finishExam('Completed', false);
+      }
+    }, 1000);
+  }
+
+  function updateTimerDisplay(){
+    var box = document.getElementById('timerBox');
+    var m = Math.floor(state.remainingSeconds / 60);
+    var s = state.remainingSeconds % 60;
+    box.textContent = (m < 10 ? '0'+m : m) + ':' + (s < 10 ? '0'+s : s);
+    if(state.remainingSeconds <= 60){
+      box.classList.add('low');
+    }else{
+      box.classList.remove('low');
+    }
+  }
+
+  /* =====================================================
+     RENDER QUESTIONS
+  ===================================================== */
+  function renderQuestion(){
+    var q = state.questions[state.currentIndex];
+    document.getElementById('qEyebrow').textContent =
+      'QUESTION ' + (state.currentIndex + 1) + ' OF ' + state.questions.length;
+    document.getElementById('qText').textContent = q.q;
+
+    var passagePanel = document.getElementById('passagePanel');
+    var passageContent = document.getElementById('passageContent');
+    if(q.passage || q.type === 'comprehension'){
+      passagePanel.style.display = 'block';
+      passageContent.textContent = q.passage ? q.passage : 'Read the passage carefully.';
+    } else {
+      passagePanel.style.display = 'none';
+    }
+
+    var shortPanel = document.getElementById('shortAnswerPanel');
+    var optList = document.getElementById('optList');
+    optList.innerHTML = '';
+    if(q.type === 'short-answer'){
+      shortPanel.style.display = 'block';
+      document.getElementById('shortAnswerField').value = state.answers[state.currentIndex] || '';
+    } else {
+      shortPanel.style.display = 'none';
+      var letters = ['A','B','C','D','E','F'];
+      (q.options || []).forEach(function(opt, idx){
+        var div = document.createElement('div');
+        div.className = 'opt' + (state.answers[state.currentIndex] === idx ? ' selected' : '');
+        div.innerHTML = '<span class="letter">' + letters[idx] + '</span><span>' + escapeHtml(opt) + '</span>';
+        div.addEventListener('click', function(){
+          state.answers[state.currentIndex] = idx;
+          renderQuestion();
+        });
+        optList.appendChild(div);
+      });
+    }
+
+    document.getElementById('prevBtn').disabled = state.currentIndex === 0;
+    document.getElementById('nextBtn').disabled = state.currentIndex === state.questions.length - 1;
+
+    var pct = ((state.currentIndex + 1) / state.questions.length) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    renderQJump();
+  }
+
+  function renderQJump(){
+    var wrap = document.getElementById('qJump');
+    wrap.innerHTML = '';
+    state.questions.forEach(function(q, idx){
+      var btn = document.createElement('button');
+      btn.textContent = idx + 1;
+      var answered = state.answers[idx] !== null && state.answers[idx] !== '';
+      if(answered) btn.classList.add('answered');
+      if(idx === state.currentIndex) btn.classList.add('current');
+      btn.addEventListener('click', function(){
+        state.currentIndex = idx;
+        renderQuestion();
+      });
+      wrap.appendChild(btn);
+    });
+  }
+
+  document.getElementById('shortAnswerField').addEventListener('input', function(){
+    if(!state.questions[state.currentIndex] || state.questions[state.currentIndex].type !== 'short-answer') return;
+    state.answers[state.currentIndex] = this.value.trim();
+  });
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, function(m){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];
+    });
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', function(){
+    if(state.currentIndex > 0){ state.currentIndex--; renderQuestion(); }
+  });
+  document.getElementById('nextBtn').addEventListener('click', function(){
+    if(state.currentIndex < state.questions.length - 1){ state.currentIndex++; renderQuestion(); }
+  });
+  document.getElementById('submitBtn').addEventListener('click', function(){
+    var unanswered = state.questions.reduce(function(count, q, idx){
+      var answer = state.answers[idx];
+      if(q.type === 'short-answer'){
+        return count + (!(answer && String(answer).trim()) ? 1 : 0);
+      }
+      return count + (answer === null ? 1 : 0);
+    }, 0);
+    var msg = unanswered > 0
+      ? ('You have ' + unanswered + ' unanswered question(s). Submit anyway?')
+      : 'Submit your examination now?';
+    if(confirm(msg)){
+      finishExam('Completed', false);
+    }
+  });
+
+  /* =====================================================
+     ANTI-CHEAT: FULLSCREEN ENFORCEMENT
+  ===================================================== */
+  function isFullscreen(){
+    return !!(document.fullscreenElement || document.webkitFullscreenElement ||
+      document.mozFullScreenElement || document.msFullscreenElement);
+  }
+
+  document.addEventListener('fullscreenchange', handleFullscreenChange);
+  document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+  document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+  document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+  function handleFullscreenChange(){
+    if(!state.examActive || state.examFinished) return;
+    if(!isFullscreen()){
+      triggerLock('fullscreen');
+    }
+  }
+
+  function triggerLock(reason){
+    if(state.lockActive || state.examFinished) return;
+    state.lockActive = true;
+    state.infractions++;
+    updateInfractionBadge();
+
+    if(state.infractions > 2){
+      showTerminationLock();
+      finishExam('TERMINATED FOR CHEATING', true);
+      return;
+    }
+
+    var overlay = document.getElementById('lockOverlay');
+    overlay.classList.add('flash');
+    overlay.style.display = 'flex';
+    document.getElementById('overlayInfractionCount').textContent =
+      'Infractions: ' + state.infractions + ' / 2';
+  }
+
+  function showTerminationLock(){
+    var overlay = document.getElementById('lockOverlay');
+    overlay.style.display = 'none';
+    overlay.classList.remove('flash');
+  }
+
+  document.getElementById('resumeBtn').addEventListener('click', function(){
+    var el = document.documentElement;
+    var req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+    if(req){
+      req.call(el).then(function(){
+        var overlay = document.getElementById('lockOverlay');
+        overlay.style.display = 'none';
+        overlay.classList.remove('flash');
+        state.lockActive = false;
+      }).catch(function(){});
+    }
+  });
+
+  /* =====================================================
+     ANTI-CHEAT: TAB / VISIBILITY TRACKING
+  ===================================================== */
+  document.addEventListener('visibilitychange', function(){
+    if(!state.examActive || state.examFinished) return;
+    if(document.hidden){
+      triggerLock('visibility');
+    }
+  });
+
+  window.addEventListener('blur', function(){
+    if(!state.examActive || state.examFinished || state.lockActive) return;
+    // Debounce: only count if the page is actually hidden/backgrounded,
+    // avoids double counting alongside fullscreen exit which also blurs.
+    setTimeout(function(){
+      if(!state.examActive || state.examFinished) return;
+      if(document.hidden && !state.lockActive){
+        triggerLock('blur');
+      }
+    }, 50);
+  });
+
+  function updateInfractionBadge(){
+    document.getElementById('infractionBadge').textContent =
+      'Infractions: ' + state.infractions + ' / 2';
+  }
+
+  /* =====================================================
+     ANTI-CHEAT: INPUT BLOCKING
+  ===================================================== */
+  document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+  document.addEventListener('selectstart', function(e){ e.preventDefault(); });
+  document.addEventListener('dragstart', function(e){ e.preventDefault(); });
+
+  document.addEventListener('keydown', function(e){
+    var key = (e.key || '').toLowerCase();
+    var blockedCombo =
+      (e.ctrlKey && ['c','v','x','u','p','s','a'].indexOf(key) !== -1) ||
+      (e.metaKey && ['c','v','x','u','p','s','a'].indexOf(key) !== -1) ||
+      (e.ctrlKey && e.shiftKey && ['i','j','c'].indexOf(key) !== -1) ||
+      key === 'f12' ||
+      key === 'printscreen';
+
+    if(blockedCombo){
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }
+  }, true);
+
+  /* =====================================================
+     FINISH / SUBMIT
+  ===================================================== */
+  function calculateScore(){
+    var score = 0;
+    state.questions.forEach(function(q, idx){
+      var answer = state.answers[idx];
+      if(q.type === 'short-answer'){
+        if(typeof answer === 'string' && typeof q.answer === 'string' && answer.trim().toLowerCase() === q.answer.trim().toLowerCase()){
+          score++;
+        }
+      } else {
+        if(answer === q.correct) score++;
+      }
+    });
+    return score;
+  }
+
+  function finishExam(status, isTermination){
+    if(state.examFinished) return;
+    state.examFinished = true;
+    state.examActive = false;
+    if(state.timerHandle) clearInterval(state.timerHandle);
+
+    var score = isTermination ? calculateScore() : calculateScore();
+
+    var result = {
+      studentId: state.studentId,
+      studentName: state.studentName,
+      score: score,
+      total: state.questions.length,
+      subject: state.subject || 'General',
+      infractions: state.infractions,
+      status: status,
+      timestamp: new Date().toISOString()
+    };
+    saveResult(result);
+
+    if(isTermination){
+      showScreen('terminatedScreen');
+      setTimeout(exitAndRedirect, 3500);
+    }else{
+      document.getElementById('finalScoreNum').textContent = score;
+      document.getElementById('finalScoreOf').textContent = 'out of ' + state.questions.length;
+      document.getElementById('resultNameLine').textContent = state.studentName + ' (ID: ' + state.studentId + ')';
+      var passMark = config.passMark !== undefined ? config.passMark : 20;
+      document.getElementById('resultStatusLine').textContent =
+        'Status: Completed \u2014 ' + (score >= passMark ? 'PASSED' : 'DID NOT MEET PASS MARK') +
+        ' \u2014 Infractions: ' + state.infractions;
+      showScreen('resultScreen');
+      setTimeout(exitAndRedirect, 4000);
+    }
+  }
+
+  function exitAndRedirect(){
+    var exitFn = document.exitFullscreen || document.webkitExitFullscreen ||
+      document.mozCancelFullScreen || document.msExitFullscreen;
+    try{
+      if(isFullscreen() && exitFn){ exitFn.call(document); }
+    }catch(e){}
+    window.location.href = 'index.html';
+  }
+
+  /* =====================================================
+     CALCULATOR WIDGET
+  ===================================================== */
+  var calcWidget = document.getElementById('calcWidget');
+  var calcToggleBtn = document.getElementById('calcToggleBtn');
+  var calcScreen = document.getElementById('calcScreen');
+  var calcExpr = '';
+  var calcMemory = '';
+
+  function formatCalcDisplay(expr){
+    return expr
+      .replace(/\*/g, '×')
+      .replace(/\//g, '÷')
+      .replace(/\bpi\b/g, 'π')
+      .replace(/π/g, 'π')
+      .replace(/\be\b/g, 'e')
+      .replace(/sqrt\(/g, '√(');
+  }
+
+  function buildCalcExpression(expr){
+    var transformed = expr
+      .replace(/π/g, 'Math.PI')
+      .replace(/√\(/g, 'Math.sqrt(')
+      .replace(/\^/g, '**')
+      .replace(/\blog\(/g, 'Math.log10(')
+      .replace(/\bln\(/g, 'Math.log(')
+      .replace(/\bsin\(/g, 'Math.sin(')
+      .replace(/\bcos\(/g, 'Math.cos(')
+      .replace(/\btan\(/g, 'Math.tan(');
+    return transformed;
+  }
+
+  function isCalcSafe(expr){
+    return /^[0-9+\-*/^().% πe√a-zA-Z]+$/.test(expr);
+  }
+
+  function updateCalcScreen(){
+    calcScreen.textContent = calcExpr === '' ? '0' : formatCalcDisplay(calcExpr);
+  }
+
+  calcToggleBtn.addEventListener('click', function(){
+    calcWidget.classList.toggle('show');
+  });
+  document.getElementById('calcCloseBtn').addEventListener('click', function(){
+    calcWidget.classList.remove('show');
+  });
+
+  document.querySelectorAll('.calc-grid button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var k = btn.dataset.k;
+      if(k === 'C'){
+        calcExpr = '';
+      } else if(k === 'DEL'){
+        calcExpr = calcExpr.slice(0, -1);
+      } else if(k === '='){
+        try{
+          if(!isCalcSafe(calcExpr) || calcExpr.trim() === '') throw new Error('invalid');
+          var result = Function('"use strict";return (' + buildCalcExpression(calcExpr) + ')')();
+          calcExpr = String(result);
+          calcMemory = calcExpr;
+        }catch(e){
+          calcExpr = 'Error';
+        }
+      } else if(k === 'ANS'){
+        calcExpr += calcMemory || '';
+      } else {
+        if(calcExpr === 'Error') calcExpr = '';
+        calcExpr += k;
+      }
+      updateCalcScreen();
+    });
+  });
+
+  /* Draggable calculator */
+  (function makeDraggable(){
+    var head = document.getElementById('calcHead');
+    var isDown = false, offsetX = 0, offsetY = 0;
+
+    head.addEventListener('mousedown', function(e){
+      isDown = true;
+      var rect = calcWidget.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+      calcWidget.style.right = 'auto';
+    });
+    document.addEventListener('mousemove', function(e){
+      if(!isDown) return;
+      calcWidget.style.left = (e.clientX - offsetX) + 'px';
+      calcWidget.style.top = (e.clientY - offsetY) + 'px';
+    });
+    document.addEventListener('mouseup', function(){ isDown = false; });
+
+    /* touch support */
+    head.addEventListener('touchstart', function(e){
+      isDown = true;
+      var touch = e.touches[0];
+      var rect = calcWidget.getBoundingClientRect();
+      offsetX = touch.clientX - rect.left;
+      offsetY = touch.clientY - rect.top;
+      calcWidget.style.right = 'auto';
+    });
+    document.addEventListener('touchmove', function(e){
+      if(!isDown) return;
+      var touch = e.touches[0];
+      calcWidget.style.left = (touch.clientX - offsetX) + 'px';
+      calcWidget.style.top = (touch.clientY - offsetY) + 'px';
+    });
+    document.addEventListener('touchend', function(){ isDown = false; });
+  })();
+
+  /* Prevent Escape key default alert spam; fullscreenchange handles the actual detection */
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && state.examActive && !state.lockActive){
+      // Browser will natively exit fullscreen; fullscreenchange listener will catch it.
+    }
+  }, true);
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excellence Academy | Computer-Based Testing Portal</title>
+<style>
+  :root{
+    --navy:#002b49;
+    --navy-deep:#001a2e;
+    --gold:#b8860b;
+    --gold-light:#d4a017;
+    --slate:#4b5563;
+    --slate-light:#8a94a3;
+    --white:#ffffff;
+    --paper:#f7f5f0;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:'Georgia','Times New Roman',serif;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(184,134,11,0.10), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(184,134,11,0.08), transparent 45%),
+      linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 55%, var(--navy-deep) 100%);
+    background-color:var(--navy);
+    color:var(--white);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    overflow-x:hidden;
+    padding:24px;
+  }
+  /* Ornamental corner seals */
+  .seal{
+    position:absolute;
+    width:120px;height:120px;
+    border:2px solid rgba(184,134,11,0.35);
+    border-radius:50%;
+    opacity:0.5;
+  }
+  .seal::after{
+    content:"";
+    position:absolute;
+    inset:12px;
+    border:1px solid rgba(184,134,11,0.35);
+    border-radius:50%;
+  }
+  .seal.tl{top:40px;left:40px;}
+  .seal.br{bottom:40px;right:40px;}
+
+  .crest{
+    width:78px;height:78px;
+    border:2px solid var(--gold);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Georgia',serif;
+    font-weight:bold;
+    font-size:28px;
+    color:var(--gold);
+    background:radial-gradient(circle, rgba(184,134,11,0.12), transparent 70%);
+    margin-bottom:22px;
+    letter-spacing:1px;
+    box-shadow:0 0 0 5px rgba(184,134,11,0.08);
+  }
+
+  .eyebrow{
+    letter-spacing:5px;
+    text-transform:uppercase;
+    font-size:12px;
+    color:var(--gold-light);
+    font-family:Georgia, serif;
+    margin-bottom:14px;
+    opacity:0.9;
+  }
+
+  h1{
+    font-size:clamp(32px,5.5vw,58px);
+    font-weight:400;
+    letter-spacing:1px;
+    text-align:center;
+    line-height:1.15;
+    margin-bottom:10px;
+  }
+  h1 span{color:var(--gold-light);font-style:italic;}
+
+  .subtitle{
+    max-width:560px;
+    text-align:center;
+    color:#c9d3de;
+    font-size:16px;
+    line-height:1.7;
+    margin-bottom:48px;
+    font-family: Georgia, serif;
+  }
+
+  .divider{
+    width:70px;height:2px;
+    background:var(--gold);
+    margin:0 auto 40px auto;
+    position:relative;
+  }
+  .divider::before, .divider::after{
+    content:"";
+    position:absolute;
+    top:-3px;
+    width:8px;height:8px;
+    border-radius:50%;
+    background:var(--gold);
+  }
+  .divider::before{left:-16px;}
+  .divider::after{right:-16px;}
+
+  .gate-wrap{
+    display:flex;
+    gap:32px;
+    flex-wrap:wrap;
+    justify-content:center;
+    width:100%;
+    max-width:820px;
+  }
+
+  .gate-card{
+    flex:1 1 320px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015));
+    border:1px solid rgba(184,134,11,0.35);
+    border-radius:4px;
+    padding:38px 30px;
+    text-align:center;
+    position:relative;
+    transition:transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+    text-decoration:none;
+    color:var(--white);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    backdrop-filter:blur(2px);
+  }
+  .gate-card:hover{
+    transform:translateY(-6px);
+    border-color:var(--gold-light);
+    box-shadow:0 18px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(184,134,11,0.3);
+  }
+  .gate-card .icon-ring{
+    width:64px;height:64px;
+    border:1.5px solid var(--gold);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:20px;
+    font-size:26px;
+    color:var(--gold-light);
+  }
+  .gate-card h2{
+    font-size:21px;
+    font-weight:400;
+    letter-spacing:0.5px;
+    margin-bottom:10px;
+    color:var(--gold-light);
+  }
+  .gate-card p{
+    color:#b7c2d0;
+    font-size:14px;
+    line-height:1.6;
+    margin-bottom:22px;
+    font-family:Georgia, serif;
+  }
+  .gate-btn{
+    border:1px solid var(--gold);
+    color:var(--gold-light);
+    background:transparent;
+    padding:10px 26px;
+    font-size:12.5px;
+    letter-spacing:2.5px;
+    text-transform:uppercase;
+    border-radius:2px;
+    font-family:Georgia, serif;
+    transition:background .3s ease, color .3s ease;
+  }
+  .gate-card:hover .gate-btn{
+    background:var(--gold);
+    color:var(--navy-deep);
+    font-weight:bold;
+  }
+
+  footer{
+    margin-top:56px;
+    text-align:center;
+    font-size:12px;
+    letter-spacing:1.5px;
+    color:var(--slate-light);
+    text-transform:uppercase;
+  }
+  footer .line{
+    display:block;
+    width:40px;
+    height:1px;
+    background:rgba(184,134,11,0.5);
+    margin:12px auto;
+  }
+
+  @media (max-width:560px){
+    .seal{display:none;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="seal tl"></div>
+  <div class="seal br"></div>
+
+  <div class="crest">EA</div>
+  <div class="eyebrow">Est. In Pursuit of Excellence</div>
+  <h1>Excellence <span>Academy</span></h1>
+  <p class="subtitle">A distinguished Computer-Based Testing environment, built for
+    disciplined assessment, rigorous integrity, and academic honour. Please
+    select your point of entry below.</p>
+
+  <div class="divider"></div>
+
+  <div class="gate-wrap">
+
+    <a class="gate-card" href="admin.html">
+      <div class="icon-ring">&#9776;</div>
+      <h2>Staff Room</h2>
+      <p>Administrative access for faculty. Configure examinations, manage the institutional settings, and review system activity.</p>
+      <span class="gate-btn">Enter Admin Panel</span>
+    </a>
+
+    <a class="gate-card" href="teacher.html">
+      <div class="icon-ring">&#128218;</div>
+      <h2>Teacher Panel</h2>
+      <p>Faculty workspace for question bank management, subject-level analytics, and student performance exports.</p>
+      <span class="gate-btn">Enter Teacher Panel</span>
+    </a>
+
+    <a class="gate-card" href="quiz.html">
+      <div class="icon-ring">&#9998;</div>
+      <h2>Examination Center</h2>
+      <p>Student access for scheduled assessments. A secure, monitored full-screen testing environment awaits.</p>
+  <footer>
+    Excellence Academy Testing Authority
+    <span class="line"></span>
+    Secured Computer-Based Testing System
+  </footer>
+
+</body>
+</html>

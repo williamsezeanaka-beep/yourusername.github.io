@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher Panel | Excellence Academy</title>
+<style>
+  :root{
+    --navy:#002b49;
+    --navy-deep:#001a2e;
+    --gold:#b8860b;
+    --gold-light:#d4a017;
+    --slate:#4b5563;
+    --slate-light:#8a94a3;
+    --white:#ffffff;
+    --paper:#f7f5f0;
+    --green:#1f6f43;
+    --red:#a12626;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{min-height:100%;}
+  body{font-family:'Segoe UI',Georgia,serif;background:var(--paper);color:var(--navy-deep);}
+  a{color:inherit;text-decoration:none;}
+  .screen{display:none;min-height:100vh;}
+  .screen.active{display:flex;align-items:center;justify-content:center;}
+  .login-panel,.dashboard-wrap{width:100%;max-width:1040px;padding:24px;}
+  .login-panel{background:linear-gradient(160deg,var(--navy-deep),var(--navy) 60%,var(--navy-deep));border-radius:8px;box-shadow:0 18px 60px rgba(0,0,0,0.25);}
+  .login-panel .crest{width:60px;height:60px;margin:0 auto 18px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold-light);font-weight:bold;font-size:24px;}
+  .login-panel h1{color:var(--gold-light);font-size:24px;text-align:center;font-family:Georgia,serif;margin-bottom:8px;}
+  .login-panel p.sub{color:#c9d3de;text-align:center;font-size:13px;margin-bottom:22px;}
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:12px;color:var(--gold-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+  .field input{width:100%;padding:12px 14px;border:1px solid rgba(255,255,255,0.2);border-radius:4px;background:rgba(255,255,255,0.08);color:#fff;font-size:14px;}
+  .field input::placeholder{color:rgba(255,255,255,0.7);}
+  .btn-gold{width:100%;padding:14px;background:var(--gold);border:none;color:var(--navy-deep);font-weight:bold;text-transform:uppercase;letter-spacing:1.5px;border-radius:4px;cursor:pointer;}
+  .btn-gold:hover{background:var(--gold-light);}
+  .login-note{margin-top:14px;text-align:center;color:#d7dfe8;font-size:12px;}
+  .dashboard-wrap{display:none;}
+  header.appbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:20px 0;}
+  .brand{display:flex;align-items:center;gap:14px;}
+  .crest-mini{width:42px;height:42px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold-light);font-size:16px;font-weight:bold;}
+  .brand h1{font-size:18px;font-family:Georgia,serif;}
+  .brand .sub{font-size:12px;color:var(--slate);text-transform:uppercase;letter-spacing:1px;}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .toolbar button{padding:10px 18px;border:1px solid var(--navy);border-radius:4px;background:var(--white);cursor:pointer;transition:all .2s ease;}
+  .toolbar button:hover{background:var(--navy);color:#fff;border-color:var(--navy);}
+  nav.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;}
+  nav.tabs button{border:none;background:transparent;color:var(--slate);padding:12px 18px;border-bottom:3px solid transparent;cursor:pointer;font-size:13px;font-family:Georgia,serif;}
+  nav.tabs button.active{color:var(--navy);border-color:var(--gold);font-weight:bold;}
+  .panel{display:none;}
+  .panel.active{display:block;animation:fadeIn .35s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  .card{background:#fff;border:1px solid #e4ddcf;border-radius:6px;padding:28px;box-shadow:0 8px 28px rgba(0,0,0,0.07);margin-bottom:22px;}
+  .card h2{margin-bottom:12px;font-size:18px;color:var(--navy);font-family:Georgia,serif;}
+  .card .desc{font-size:13px;color:var(--slate);margin-bottom:18px;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  @media(max-width:860px){.grid-2{grid-template-columns:1fr;}}
+  .field2{margin-bottom:14px;}
+  .field2 label{display:block;font-size:12px;color:var(--navy);font-weight:700;margin-bottom:8px;}
+  .field2 input,.field2 textarea,.field2 select{width:100%;padding:12px 14px;border:1px solid #d7d0c2;border-radius:4px;background:#fdfcf9;font-size:14px;color:var(--navy-deep);}
+  .field2 textarea{min-height:120px;resize:vertical;line-height:1.5;}
+  .small-note{font-size:12px;color:var(--slate);margin-top:6px;}
+  .btn{padding:12px 18px;border-radius:4px;border:none;cursor:pointer;font-weight:700;text-transform:uppercase;letter-spacing:1px;font-size:13px;}
+  .btn-primary{background:var(--navy);color:#fff;}
+  .btn-primary:hover{background:var(--navy-deep);}
+  .btn-outline{background:transparent;border:1px solid var(--navy);color:var(--navy);}
+  .btn-outline:hover{background:var(--navy);color:#fff;}
+  .btn-danger{background:transparent;border:1px solid var(--red);color:var(--red);}
+  .btn-danger:hover{background:var(--red);color:#fff;}
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  thead th{background:var(--navy);color:#fff;text-align:left;padding:12px 14px;font-size:12.5px;letter-spacing:1px;text-transform:uppercase;}
+  tbody td{padding:12px 14px;border-bottom:1px solid #ede7d8;color:var(--navy-deep);vertical-align:top;}
+  tbody tr:nth-child(even){background:#fbf9f3;}
+  tbody tr:hover{background:#f3ecd9;}
+  .badge{padding:5px 10px;border-radius:999px;font-size:12px;font-weight:700;display:inline-block;}
+  .badge.primary{background:var(--gold);color:var(--navy);}
+  .badge.accent{background:#e8f2e6;color:var(--1f6f43);}
+  .rich-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+  .rich-toolbar button{padding:8px 12px;font-size:13px;}
+  .save-msg{font-size:13px;color:var(--green);min-height:18px;margin-top:10px;}
+  .card-grid{display:grid;grid-template-columns:1fr 180px;gap:20px;}
+  @media(max-width:860px){.card-grid{grid-template-columns:1fr;}}
+  .field-inline{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .field-inline input{flex:1;}
+  .help-quiet{color:#777;font-size:12px;}
+</style>
+</head>
+<body oncontextmenu="return false;">
+  <div class="screen active" id="loginScreen">
+    <div class="login-panel">
+      <div class="crest">EA</div>
+      <h1>Teacher Portal</h1>
+      <p class="sub">Secure instructor access for question bank management and performance review.</p>
+      <form id="teacherLoginForm">
+        <div class="field">
+          <label>Username</label>
+          <input type="text" id="teacherUserInput" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="teacherPassInput" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn-gold">Sign In</button>
+      </form>
+      <div id="teacherLoginError" class="login-note"></div>
+      <p class="login-note">If no teacher account exists, ask the administrator to create your access through the Staff Room.</p>
+    </div>
+  </div>
+
+  <div class="dashboard-wrap screen" id="dashboardScreen">
+    <header class="appbar">
+      <div class="brand">
+        <div class="crest-mini">EA</div>
+        <div>
+          <h1>Excellence Academy</h1>
+          <div class="sub" id="teacherWelcome">Teacher Workspace</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button class="btn btn-outline" id="backBtn">Main Gate</button>
+        <button class="btn btn-outline" id="logoutBtn">Sign Out</button>
+      </div>
+    </header>
+
+    <nav class="tabs">
+      <button class="active" data-tab="bankTab">Question Bank</button>
+      <button data-tab="analyticsTab">Analytics</button>
+    </nav>
+
+    <section class="panel active" id="bankTab">
+      <div class="card">
+        <h2>Assigned Subjects</h2>
+        <p class="desc">Your active subject assignments determine which exam content you can author.</p>
+        <div id="assignedSubjects"></div>
+      </div>
+      <div class="card">
+        <h2>Question Bank</h2>
+        <p class="desc">Add and refine curriculum-aligned questions with structured subjects and module types.</p>
+        <div style="overflow-x:auto;margin-bottom:14px;">
+          <table>
+            <thead>
+              <tr><th>Subject</th><th>Module</th><th>Question</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="questionBankBody"></tbody>
+          </table>
+        </div>
+        <div class="field2">
+          <label>Question Type</label>
+          <select id="questionTypeSelect">
+            <option value="mcq">Multiple Choice</option>
+            <option value="short-answer">Short Answer</option>
+            <option value="comprehension">Reading Comprehension</option>
+          </select>
+        </div>
+        <div class="field2">
+          <label>Subject</label>
+          <select id="questionSubjectSelect"></select>
+        </div>
+        <div class="field2">
+          <label>Question Text</label>
+          <div class="rich-toolbar">
+            <button type="button" data-tag="strong">Bold</button>
+            <button type="button" data-tag="em">Italic</button>
+            <button type="button" data-tag="u">Underline</button>
+          </div>
+          <textarea id="questionTextInput" spellcheck="false"></textarea>
+        </div>
+        <div class="grid-2" id="mcqOptions">
+          <div class="field2"><label>Option A</label><input type="text" id="optionA"></div>
+          <div class="field2"><label>Option B</label><input type="text" id="optionB"></div>
+          <div class="field2"><label>Option C</label><input type="text" id="optionC"></div>
+          <div class="field2"><label>Option D</label><input type="text" id="optionD"></div>
+        </div>
+        <div class="field2" id="shortAnswerPanel" style="display:none;">
+          <label>Correct Answer</label>
+          <input type="text" id="shortAnswerInput">
+        </div>
+        <div class="field2" id="passagePanel" style="display:none;">
+          <label>Passage / Reading Text</label>
+          <textarea id="passageInput" spellcheck="false" style="min-height:120px;"></textarea>
+        </div>
+        <div class="field2">
+          <label>Correct Response</label>
+          <select id="correctOptionSelect">
+            <option value="0">Option A</option>
+            <option value="1">Option B</option>
+            <option value="2">Option C</option>
+            <option value="3">Option D</option>
+          </select>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="saveQuestionBtn">Save Question</button>
+          <button class="btn btn-outline" id="clearQuestionBtn">Reset Form</button>
+        </div>
+        <div class="save-msg" id="questionSaveMsg"></div>
+      </div>
+    </section>
+
+    <section class="panel" id="analyticsTab">
+      <div class="card">
+        <h2>Performance Analytics</h2>
+        <p class="desc">Filter gradebook results by subject and export a teacher-specific report.</p>
+        <div class="field2" style="max-width:320px;">
+          <label>Subject Filter</label>
+          <select id="analyticsSubjectFilter"></select>
+        </div>
+        <div class="btn-row" style="margin-bottom:16px;">
+          <button class="btn btn-outline" id="exportTeacherBtn">Export Filtered CSV</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr><th>Student</th><th>Subject</th><th>Score</th><th>Status</th><th>Infractions</th><th>Time</th></tr>
+            </thead>
+            <tbody id="analyticsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+<script>
+(function(){
+  'use strict';
+  var teacherLogin = document.getElementById('teacherLoginForm');
+  var dashboard = document.getElementById('dashboardScreen');
+  var loginScreen = document.getElementById('loginScreen');
+  var loginError = document.getElementById('teacherLoginError');
+  var currentTeacher = null;
+  var editIndex = null;
+
+  function getTeachers(){
+    try{
+      var raw = localStorage.getItem('cbt_teachers');
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){
+      return [];
+    }
+  }
+
+  function getConfig(){
+    try{
+      var raw = localStorage.getItem('cbt_config');
+      return raw ? JSON.parse(raw) : {duration:30,passMark:20,calculatorEnabled:true,questions:[]};
+    }catch(e){
+      return {duration:30,passMark:20,calculatorEnabled:true,questions:[]};
+    }
+  }
+
+  function saveConfig(config){
+    localStorage.setItem('cbt_config', JSON.stringify(config));
+  }
+
+  function getSubjects(){
+    try{
+      var raw = localStorage.getItem('cbt_subjects');
+      var subjects = raw ? JSON.parse(raw) : ['Mathematics','English','Science'];
+      return Array.isArray(subjects) && subjects.length ? subjects : ['Mathematics','English','Science'];
+    }catch(e){
+      return ['Mathematics','English','Science'];
+    }
+  }
+
+  function getResults(){
+    try{
+      var raw = localStorage.getItem('cbt_results');
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){
+      return [];
+    }
+  }
+
+  function escapeHtml(str){
+    if(str === undefined || str === null) return '';
+    return String(str).replace(/[&<>'"]/g, function(m){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];
+    });
+  }
+
+  function formatForDisplay(text){
+    return text.replace(/\n/g,'<br>');
+  }
+
+  teacherLogin.addEventListener('submit', function(e){
+    e.preventDefault();
+    var username = document.getElementById('teacherUserInput').value.trim();
+    var password = document.getElementById('teacherPassInput').value;
+    var teacher = getTeachers().find(function(item){ return item.username === username && item.password === password; });
+    if(!teacher){
+      loginError.textContent = 'Invalid teacher credentials. Please contact administration.';
+      return;
+    }
+    currentTeacher = teacher;
+    sessionStorage.setItem('cbt_teacher_authed', JSON.stringify({username:teacher.username}));
+    loginError.textContent = '';
+    showDashboard();
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', function(){
+    sessionStorage.removeItem('cbt_teacher_authed');
+    window.location.href = 'index.html';
+  });
+
+  document.getElementById('backBtn').addEventListener('click', function(){
+    window.location.href = 'index.html';
+  });
+
+  if(sessionStorage.getItem('cbt_teacher_authed')){
+    var acct = JSON.parse(sessionStorage.getItem('cbt_teacher_authed'));
+    var teacher = getTeachers().find(function(item){ return item.username === acct.username; });
+    if(teacher){
+      currentTeacher = teacher;
+      showDashboard();
+    }
+  }
+
+  document.querySelectorAll('nav.tabs button').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      document.querySelectorAll('nav.tabs button').forEach(function(btn){ btn.classList.remove('active'); });
+      document.querySelectorAll('.panel').forEach(function(panel){ panel.classList.remove('active'); });
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+      if(tab.dataset.tab === 'analyticsTab'){ renderAnalytics(); }
+    });
+  });
+
+  function showDashboard(){
+    loginScreen.classList.remove('active');
+    dashboard.style.display = 'block';
+    dashboard.classList.add('active');
+    document.getElementById('teacherWelcome').textContent = 'Welcome, ' + currentTeacher.name;
+    renderAssignedSubjects();
+    fillSubjectOptions();
+    renderQuestionBank();
+    renderAnalytics();
+  }
+
+  function renderAssignedSubjects(){
+    var wrap = document.getElementById('assignedSubjects');
+    wrap.innerHTML = currentTeacher.subjects.length ? currentTeacher.subjects.map(function(s){ return '<span class="badge primary">' + escapeHtml(s) + '</span>'; }).join(' ') : '<span class="help-quiet">No assigned subjects.</span>';
+  }
+
+  function fillSubjectOptions(){
+    var subjects = getSubjects();
+    var subjectSelect = document.getElementById('questionSubjectSelect');
+    var analyticsSelect = document.getElementById('analyticsSubjectFilter');
+    subjectSelect.innerHTML = '';
+    analyticsSelect.innerHTML = '<option value="all">All Subjects</option>';
+    subjects.forEach(function(subject){
+      var opt = document.createElement('option');
+      opt.value = subject;
+      opt.textContent = subject;
+      subjectSelect.appendChild(opt);
+      if(currentTeacher.subjects.indexOf(subject) !== -1){
+        var filterOpt = document.createElement('option');
+        filterOpt.value = subject;
+        filterOpt.textContent = subject;
+        analyticsSelect.appendChild(filterOpt);
+      }
+    });
+  }
+
+  function getTeacherQuestions(){
+    var config = getConfig();
+    return config.questions.filter(function(q){ return currentTeacher.subjects.indexOf(q.subject) !== -1; });
+  }
+
+  function renderQuestionBank(){
+    var questions = getTeacherQuestions();
+    var body = document.getElementById('questionBankBody');
+    body.innerHTML = '';
+    if(questions.length === 0){
+      body.innerHTML = '<tr><td colspan="4" class="help-quiet">No questions yet for your subjects.</td></tr>';
+      return;
+    }
+    questions.forEach(function(question, idx){
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td>' + escapeHtml(question.subject) + '</td>' +
+                     '<td>' + escapeHtml(question.type.replace('-', ' ')) + '</td>' +
+                     '<td>' + (question.q.length > 120 ? escapeHtml(question.q.slice(0, 120)) + '…' : escapeHtml(question.q)) + '</td>' +
+                     '<td><button class="btn btn-outline" data-action="edit">Edit</button> <button class="btn btn-danger" data-action="delete">Delete</button></td>';
+      tr.querySelector('[data-action="edit"]').addEventListener('click', function(){
+        editIndex = idx;
+        populateQuestionForm(question);
+      });
+      tr.querySelector('[data-action="delete"]').addEventListener('click', function(){
+        if(!confirm('Delete this question?')) return;
+        var config = getConfig();
+        config.questions.splice(config.questions.indexOf(question), 1);
+        saveConfig(config);
+        renderQuestionBank();
+      });
+      body.appendChild(tr);
+    });
+  }
+
+  function populateQuestionForm(question){
+    document.getElementById('questionTypeSelect').value = question.type || 'mcq';
+    updateQuestionPanels();
+    document.getElementById('questionSubjectSelect').value = question.subject || '';
+    document.getElementById('questionTextInput').value = question.q || '';
+    document.getElementById('passageInput').value = question.passage || '';
+    if(question.type === 'short-answer'){
+      document.getElementById('shortAnswerInput').value = question.answer || '';
+    } else {
+      document.getElementById('optionA').value = question.options[0] || '';
+      document.getElementById('optionB').value = question.options[1] || '';
+      document.getElementById('optionC').value = question.options[2] || '';
+      document.getElementById('optionD').value = question.options[3] || '';
+      document.getElementById('correctOptionSelect').value = question.correct || 0;
+    }
+  }
+
+  function updateQuestionPanels(){
+    var type = document.getElementById('questionTypeSelect').value;
+    document.getElementById('mcqOptions').style.display = type === 'mcq' || type === 'comprehension' ? 'grid' : 'none';
+    document.getElementById('shortAnswerPanel').style.display = type === 'short-answer' ? 'block' : 'none';
+    document.getElementById('passagePanel').style.display = type === 'comprehension' ? 'block' : 'none';
+    document.getElementById('correctOptionSelect').style.display = type === 'short-answer' ? 'none' : 'block';
+  }
+
+  document.getElementById('questionTypeSelect').addEventListener('change', function(){
+    updateQuestionPanels();
+  });
+
+  document.querySelectorAll('.rich-toolbar button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var tag = btn.dataset.tag;
+      var textarea = document.getElementById('questionTextInput');
+      var start = textarea.selectionStart;
+      var end = textarea.selectionEnd;
+      var selected = textarea.value.slice(start, end);
+      textarea.setRangeText('<' + tag + '>' + selected + '</' + tag + '>', start, end, 'end');
+      textarea.focus();
+    });
+  });
+
+  document.getElementById('saveQuestionBtn').addEventListener('click', function(){
+    var type = document.getElementById('questionTypeSelect').value;
+    var subject = document.getElementById('questionSubjectSelect').value;
+    var questionText = document.getElementById('questionTextInput').value.trim();
+    var passage = document.getElementById('passageInput').value.trim();
+    var optionA = document.getElementById('optionA').value.trim();
+    var optionB = document.getElementById('optionB').value.trim();
+    var optionC = document.getElementById('optionC').value.trim();
+    var optionD = document.getElementById('optionD').value.trim();
+    var correct = parseInt(document.getElementById('correctOptionSelect').value, 10);
+    var shortAnswer = document.getElementById('shortAnswerInput').value.trim();
+    var msg = document.getElementById('questionSaveMsg');
+    if(!questionText || !subject){
+      msg.style.color = '#a12626';
+      msg.textContent = 'Subject and question text are required.';
+      return;
+    }
+    var config = getConfig();
+    var question = { type: type, subject: subject, q: questionText };
+    if(type === 'short-answer'){
+      if(!shortAnswer){ msg.style.color = '#a12626'; msg.textContent = 'Correct answer is required for short answer questions.'; return; }
+      question.answer = shortAnswer;
+    } else {
+      var options = [optionA, optionB, optionC, optionD].map(function(v){ return v.trim(); });
+      if(options.some(function(v){ return !v; })){ msg.style.color = '#a12626'; msg.textContent = 'All four options must be provided.'; return; }
+      question.options = options;
+      question.correct = correct;
+      if(type === 'comprehension') question.passage = passage;
+    }
+    if(editIndex !== null){
+      var teacherQuestions = getTeacherQuestions();
+      var questionToEdit = teacherQuestions[editIndex];
+      var index = config.questions.indexOf(questionToEdit);
+      if(index !== -1){ config.questions[index] = question; }
+    } else {
+      config.questions.push(question);
+    }
+    saveConfig(config);
+    msg.style.color = '#1f6f43';
+    msg.textContent = 'Question saved successfully.';
+    setTimeout(function(){ msg.textContent = ''; }, 4000);
+    editIndex = null;
+    renderQuestionBank();
+  });
+
+  document.getElementById('clearQuestionBtn').addEventListener('click', function(){
+    editIndex = null;
+    document.getElementById('questionTextInput').value = '';
+    document.getElementById('optionA').value = '';
+    document.getElementById('optionB').value = '';
+    document.getElementById('optionC').value = '';
+    document.getElementById('optionD').value = '';
+    document.getElementById('shortAnswerInput').value = '';
+    document.getElementById('passageInput').value = '';
+    document.getElementById('questionSaveMsg').textContent = '';
+  });
+
+  function renderAnalytics(){
+    var results = getResults();
+    var filter = document.getElementById('analyticsSubjectFilter').value;
+    var rows = results.filter(function(record){ return filter === 'all' || record.subject === filter; });
+    var body = document.getElementById('analyticsBody');
+    body.innerHTML = '';
+    if(rows.length === 0){
+      body.innerHTML = '<tr><td colspan="6" class="help-quiet">No exam records for the selected subject.</td></tr>';
+      return;
+    }
+    rows.slice().reverse().forEach(function(record){
+      body.innerHTML += '<tr><td>' + escapeHtml(record.studentName) + '</td>' +
+                       '<td>' + escapeHtml(record.subject || 'General') + '</td>' +
+                       '<td>' + record.score + ' / ' + record.total + '</td>' +
+                       '<td>' + escapeHtml(record.status) + '</td>' +
+                       '<td>' + record.infractions + '</td>' +
+                       '<td>' + new Date(record.timestamp).toLocaleString() + '</td></tr>';
+    });
+  }
+
+  document.getElementById('analyticsSubjectFilter').addEventListener('change', renderAnalytics);
+
+  document.getElementById('exportTeacherBtn').addEventListener('click', function(){
+    var filter = document.getElementById('analyticsSubjectFilter').value;
+    var results = getResults().filter(function(record){ return filter === 'all' || record.subject === filter; });
+    if(results.length === 0){ alert('No records to export for this subject.'); return; }
+    var headers = ['Student ID','Student Name','Subject','Score','Total','Infractions','Status','Timestamp'];
+    var rows = results.map(function(r){ return [r.studentId,r.studentName,r.subject || 'General',r.score,r.total,r.infractions,r.status,r.timestamp].map(function(v){ return '"' + String(v === undefined || v === null ? '' : v).replace(/"/g,'""') + '"'; }).join(','); });
+    var csv = headers.join(',') + '\n' + rows.join('\n');
+    var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'teacher_gradebook_' + (filter === 'all' ? 'all' : filter) + '_' + Date.now() + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  if(document.getElementById('analyticsSubjectFilter')){
+    renderAnalytics();
+  }
+})();
+</script>
+</body>
+</html>
